@@ -109,6 +109,113 @@ Ready - started server on 0.0.0.0:3000, url: http://localhost:3000
 2. Go to: `http://localhost:3000`
 3. You should see the login page
 
+## Working with Git (For Developers)
+
+If you're making changes to the code, follow this git workflow:
+
+### Creating a New Feature
+
+Always create a new branch for each feature or bug fix:
+
+```bash
+# Make sure you're on the main branch and it's up to date
+git checkout main
+git pull origin main
+
+# Create a new feature branch
+git checkout -b feature/your-feature-name
+
+# Examples of good branch names:
+# feature/improve-login-styling
+# feature/add-transaction-form
+# bugfix/fix-registration-error
+```
+
+### Making Changes and Committing
+
+```bash
+# Check what files you've changed
+git status
+
+# Add your changes
+git add .
+
+# Commit with a descriptive message
+git commit -m "feat: improve login page styling
+
+- Add modern card design with shadows
+- Improve form input styling with focus effects
+- Make buttons more prominent with better colors
+- Add responsive design for mobile devices"
+
+# Push your branch to GitHub
+git push -u origin feature/your-feature-name
+```
+
+### Commit Message Format
+
+Use this format for commit messages:
+
+```bash
+# For new features
+git commit -m "feat: description of what you added"
+
+# For bug fixes  
+git commit -m "fix: description of what you fixed"
+
+# For styling changes
+git commit -m "style: description of styling changes"
+
+# For documentation updates
+git commit -m "docs: description of documentation changes"
+```
+
+### Creating a Pull Request
+
+1. Go to GitHub in your web browser
+2. Navigate to your repository
+3. Click "Compare & pull request" for your branch
+4. Add a description of what you changed
+5. Click "Create pull request"
+6. Wait for code review before merging
+
+### Updating Your Branch
+
+If the main branch has new changes while you're working:
+
+```bash
+# Switch to main branch
+git checkout main
+
+# Get latest changes
+git pull origin main
+
+# Switch back to your feature branch
+git checkout feature/your-feature-name
+
+# Merge the updates into your branch
+git merge main
+```
+
+### Common Git Commands
+
+```bash
+# See what branch you're on
+git branch
+
+# Switch to a different branch
+git checkout branch-name
+
+# See what files have changed
+git status
+
+# See your commit history
+git log --oneline
+
+# Undo changes to a file (before committing)
+git checkout -- filename
+```
+
 ## First Time Using the App
 
 ### Test Login Credentials
