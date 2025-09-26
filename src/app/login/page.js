@@ -38,7 +38,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-cover bg-center" 
+     style={{ backgroundImage: "url('https://cloudinary.hbs.edu/hbsit/image/upload/s--wx5D2ABw--/f_auto,c_fill,h_375,w_750,/v20200101/5393409F6FB391494111C5EC16653C89.jpg')" }}>
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-md animate-fadeInUp">
         <h1 className="text-2xl font-bold text-center mb-6">Login to IKER Finance</h1>
         
@@ -49,7 +50,7 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
+          <div className="animate-fadeInUP animate-delay-200">
             <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
             <input
               type="email"
@@ -62,7 +63,7 @@ export default function LoginPage() {
             />
           </div>
 
-          <div>
+          <div className="animate-fadeinUp animate-delay-400">
             <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
             <input
               type="password"
@@ -91,6 +92,6 @@ export default function LoginPage() {
           </Link>
         </p>
       </div>
-    </div>
+      </div>
   );
 }
