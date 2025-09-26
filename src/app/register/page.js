@@ -51,7 +51,7 @@ export default function RegisterPage() {
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{
         backgroundImage:
-          "url('https://cloudinary.hbs.edu/hbsit/image/upload/s--wx5D2ABw--/f_auto,c_fill,h_375,w_750,/v20200101/5393409F6FB391494111C5EC16653C89.jpg')",
+          "url('https://www.idfcfirstbank.com/content/dam/idfcfirstbank/images/blog/finance/difference-between-money-finance-funds-717X404.jpg')",
       }}
     >
       <div className="w-full max-w-md bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-md animate-fadeInUp">
