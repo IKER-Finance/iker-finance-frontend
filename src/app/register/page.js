@@ -47,15 +47,27 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h1>Register for IKER Finance</h1>
-        
-        {error && <div className="error-message">{error}</div>}
-        
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="firstName">First Name</label>
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center"
+      style={{
+        backgroundImage:
+          "url('https://www.idfcfirstbank.com/content/dam/idfcfirstbank/images/blog/finance/difference-between-money-finance-funds-717X404.jpg')",
+      }}
+    >
+      <div className="w-full max-w-md bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-md animate-fadeInUp">
+        <h1 className="text-2xl font-bold text-center mb-6">Register for IKER Finance</h1>
+
+        {error && (
+          <div className="mb-4 text-red-600 bg-red-100 border border-red-300 rounded-lg p-2 text-sm animate-fadeInUp animate-delay-200">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="animate-fadeInUp animate-delay-200">
+            <label htmlFor="firstName" className="block text-sm font-medium mb-1">
+              First Name
+            </label>
             <input
               type="text"
               id="firstName"
@@ -63,11 +75,14 @@ export default function RegisterPage() {
               value={formData.firstName}
               onChange={handleChange}
               required
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="lastName">Last Name</label>
+          <div className="animate-fadeInUp animate-delay-400">
+            <label htmlFor="lastName" className="block text-sm font-medium mb-1">
+              Last Name
+            </label>
             <input
               type="text"
               id="lastName"
@@ -75,11 +90,14 @@ export default function RegisterPage() {
               value={formData.lastName}
               onChange={handleChange}
               required
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
+          <div className="animate-fadeInUp animate-delay-600">
+            <label htmlFor="email" className="block text-sm font-medium mb-1">
+              Email
+            </label>
             <input
               type="email"
               id="email"
@@ -87,11 +105,14 @@ export default function RegisterPage() {
               value={formData.email}
               onChange={handleChange}
               required
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
+          <div className="animate-fadeInUp animate-delay-800">
+            <label htmlFor="password" className="block text-sm font-medium mb-1">
+              Password
+            </label>
             <input
               type="password"
               id="password"
@@ -99,11 +120,14 @@ export default function RegisterPage() {
               value={formData.password}
               onChange={handleChange}
               required
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
+          <div className="animate-fadeInUp animate-delay-1000">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">
+              Confirm Password
+            </label>
             <input
               type="password"
               id="confirmPassword"
@@ -111,16 +135,24 @@ export default function RegisterPage() {
               value={formData.confirmPassword}
               onChange={handleChange}
               required
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
-          <button type="submit" disabled={loading} className="submit-btn">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 animate-fadeInUp animate-delay-1200"
+          >
             {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
 
-        <p>
-          Already have an account? <Link href="/login">Login here</Link>
+        <p className="text-sm text-center mt-6 animate-fadeInUp animate-delay-1200">
+          Already have an account?{' '}
+          <Link href="/login" className="text-indigo-600 hover:underline">
+            Login here
+          </Link>
         </p>
       </div>
     </div>
