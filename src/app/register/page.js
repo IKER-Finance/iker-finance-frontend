@@ -1,17 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
-// PrimeReact imports
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
-
-import { authService, tokenService } from '../../services';
+import { Dropdown } from 'primereact/dropdown';
+import { authService, currencyService, tokenService } from '../../services';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -20,10 +18,28 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    homeCurrencyId: null,
   });
+  const [currencies, setCurrencies] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingCurrencies, setLoadingCurrencies] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchCurrencies = async () => {
+      try {
+        const data = await currencyService.getActiveCurrencies();
+        setCurrencies(data);
+      } catch (err) {
+        setError('Failed to load currencies. Please refresh the page.');
+      } finally {
+        setLoadingCurrencies(false);
+      }
+    };
+
+    fetchCurrencies();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -43,9 +59,16 @@ export default function RegisterPage() {
       return;
     }
 
+    if (!formData.homeCurrencyId) {
+      setError('Please select your home currency');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await authService.register(formData);
       tokenService.setToken(response.token);
+      tokenService.setUser(response.user);
       router.push('/dashboard');
     } catch (err) {
       setError(err.message);
@@ -54,28 +77,38 @@ export default function RegisterPage() {
     }
   };
 
+  const currencyOptionTemplate = (option) => {
+    return (
+      <div>
+        <span className="font-semibold">{option.code}</span> - {option.name} ({option.symbol})
+      </div>
+    );
+  };
+
   return (
-    <div className="flex justify-content-center align-items-center min-h-screen"
-         style={{
-           backgroundImage: "url('https://www.idfcfirstbank.com/content/dam/idfcfirstbank/images/blog/finance/difference-between-money-finance-funds-717X404.jpg')",
-           backgroundSize: 'cover',
-           backgroundPosition: 'center',
-           backgroundRepeat: 'no-repeat',
-           minHeight: '100vh',
-         }}
+    <div
+      className="flex justify-content-center align-items-center min-h-screen"
+      style={{
+        backgroundImage: "url('https://www.idfcfirstbank.com/content/dam/idfcfirstbank/images/blog/finance/difference-between-money-finance-funds-717X404.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        minHeight: '100vh',
+      }}
     >
-      <Card title="Register for IKER Finance" className="w-full md:w-4 lg:w-3 shadow-4" style={{
-      background: 'rgba(255, 255, 255, 0.85)',
-      backdropFilter: 'blur(8px)',
-      borderRadius: '1rem',
-      width: '100%',
-      maxWidth: '400px',  
-      margin: '0 auto',    
-    }}>
-        
-        {error && (
-          <Message severity="error" text={error} className="mb-3" />
-        )}
+      <Card
+        title="Register for IKER Finance"
+        className="shadow-4"
+        style={{
+          background: 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(8px)',
+          borderRadius: '1rem',
+          width: '100%',
+          maxWidth: '400px',  
+          margin: '0 auto',    
+        }}
+      >
+        {error && <Message severity="error" text={error} className="mb-3" />}
 
         <form onSubmit={handleSubmit} className="p-fluid">
           <div className="field mb-3">
@@ -113,6 +146,23 @@ export default function RegisterPage() {
           </div>
 
           <div className="field mb-3">
+            <label htmlFor="homeCurrencyId">Home Currency</label>
+            <Dropdown
+              id="homeCurrencyId"
+              name="homeCurrencyId"
+              value={formData.homeCurrencyId}
+              options={currencies}
+              onChange={(e) => setFormData({ ...formData, homeCurrencyId: e.value })}
+              optionLabel="code"
+              optionValue="id"
+              placeholder="Select your currency"
+              itemTemplate={currencyOptionTemplate}
+              disabled={loadingCurrencies}
+              required
+            />
+          </div>
+
+          <div className="field mb-3">
             <label htmlFor="password">Password</label>
             <Password
               id="password"
@@ -143,6 +193,7 @@ export default function RegisterPage() {
             label={loading ? 'Registering...' : 'Register'}
             icon="pi pi-user-plus"
             loading={loading}
+            disabled={loadingCurrencies}
             className="w-full"
           />
         </form>
