@@ -1,5 +1,9 @@
 import localFont from "next/font/local";
 import "./globals.css";
+import './globals.css';
+import 'primereact/resources/themes/lara-light-indigo/theme.css';  
+import 'primereact/resources/primereact.min.css';  
+import 'primeicons/primeicons.css';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
