@@ -64,7 +64,14 @@ export default function RegisterPage() {
            minHeight: '100vh',
          }}
     >
-      <Card title="Register for IKER Finance" className="w-full md:w-4 lg:w-3 shadow-4">
+      <Card title="Register for IKER Finance" className="w-full md:w-4 lg:w-3 shadow-4" style={{
+      background: 'rgba(255, 255, 255, 0.85)',
+      backdropFilter: 'blur(8px)',
+      borderRadius: '1rem',
+      width: '100%',
+      maxWidth: '400px',  
+      margin: '0 auto',    
+    }}>
         
         {error && (
           <Message severity="error" text={error} className="mb-3" />
