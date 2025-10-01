@@ -15,7 +15,22 @@ export const tokenService = {
   removeToken() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth-token');
+      localStorage.removeItem('user-data');
     }
+  },
+
+  setUser(user) {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('user-data', JSON.stringify(user));
+    }
+  },
+
+  getUser() {
+    if (typeof window !== 'undefined') {
+      const userData = localStorage.getItem('user-data');
+      return userData ? JSON.parse(userData) : null;
+    }
+    return null;
   },
 
   isAuthenticated() {
