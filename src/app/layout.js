@@ -6,6 +6,7 @@ import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
+import '../styles/dashboard.css';
 
 import store from '../redux/store';
 import { LayoutProvider } from '../layout/context/layout-context';

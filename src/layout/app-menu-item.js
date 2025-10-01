@@ -24,9 +24,9 @@ const AppMenuItem = (props) => {
     }
   };
 
-  useEffect(() => {
-    onRouteChange(pathname);
-  }, [pathname, searchParams]);
+useEffect(() => {
+  onRouteChange(pathname);
+}, [pathname, searchParams, onRouteChange]);
 
   const itemClick = (event) => {
     if (item?.disabled) {

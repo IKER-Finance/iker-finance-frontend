@@ -65,7 +65,7 @@ const Layout = ({ children }) => {
     }
 
     layoutState.staticMenuMobileActive && blockBodyScroll();
-  }, [layoutState.overlayMenuActive, layoutState.staticMenuMobileActive]);
+  }, [layoutState.overlayMenuActive, layoutState.staticMenuMobileActive, bindMenuOutsideClickListener]);
 
   const containerClass = classNames('layout-wrapper', {
     'layout-overlay': layoutConfig.menuMode === 'overlay',
