@@ -2,19 +2,24 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSelector, useDispatch } from 'react-redux';
 import Link from 'next/link';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
-import { authService, tokenService } from '../../services';
+import { authService } from '../../services/api-service/auth-service';
+import { selectAuthLoading, selectAuthError } from '../../redux/feature/auth-slice';
+import PAGE_ROUTES from '../../constants/page-constants';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
+  
+  const loading = useSelector(selectAuthLoading);
+  const error = useSelector(selectAuthError);
   
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,18 +27,12 @@ export default function LoginPage() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
     
     try {
-      const response = await authService.login(formData);
-      tokenService.setToken(response.token);
-      tokenService.setUser(response.user);
-      router.push('/dashboard');
+      await authService.login(formData);
+      router.push(PAGE_ROUTES.overview);
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      // Error is already handled by Redux in authService
     }
   };
   
@@ -99,7 +98,7 @@ export default function LoginPage() {
         
         <p className="text-center mt-4">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="text-primary font-medium">
+          <Link href={PAGE_ROUTES.register} className="text-primary font-medium">
             Register here
           </Link>
         </p>
