@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
@@ -9,7 +10,10 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
 import { Dropdown } from 'primereact/dropdown';
-import { authService, currencyService, tokenService } from '../../services';
+import { authService } from '../../services/api-service/auth-service';
+import { currencyService } from '../../services/api-service/currency-service';
+import { selectAuthLoading, selectAuthError } from '../../redux/feature/auth-slice';
+import PAGE_ROUTES from '../../constants/page-constants';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -22,9 +26,11 @@ export default function RegisterPage() {
   });
   const [currencies, setCurrencies] = useState([]);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const [loadingCurrencies, setLoadingCurrencies] = useState(true);
   const router = useRouter();
+
+  const loading = useSelector(selectAuthLoading);
+  const authError = useSelector(selectAuthError);
 
   useEffect(() => {
     const fetchCurrencies = async () => {
@@ -50,30 +56,23 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
-      setLoading(false);
       return;
     }
 
     if (!formData.homeCurrencyId) {
       setError('Please select your home currency');
-      setLoading(false);
       return;
     }
 
     try {
-      const response = await authService.register(formData);
-      tokenService.setToken(response.token);
-      tokenService.setUser(response.user);
-      router.push('/dashboard');
+      await authService.register(formData);
+      router.push(PAGE_ROUTES.overview);
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      // Error is already handled by Redux in authService
     }
   };
 
@@ -84,6 +83,8 @@ export default function RegisterPage() {
       </div>
     );
   };
+
+  const displayError = error || authError;
 
   return (
     <div
@@ -108,7 +109,7 @@ export default function RegisterPage() {
           margin: '0 auto',    
         }}
       >
-        {error && <Message severity="error" text={error} className="mb-3" />}
+        {displayError && <Message severity="error" text={displayError} className="mb-3" />}
 
         <form onSubmit={handleSubmit} className="p-fluid">
           <div className="field mb-3">
@@ -200,7 +201,7 @@ export default function RegisterPage() {
 
         <p className="text-center mt-4">
           Already have an account?{' '}
-          <Link href="/login" className="text-primary font-medium">
+          <Link href={PAGE_ROUTES.login} className="text-primary font-medium">
             Login here
           </Link>
         </p>
