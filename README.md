@@ -2,6 +2,20 @@
 
 A personal finance management web application that helps you track expenses, manage budgets, and monitor your spending across multiple currencies. Perfect for students, travelers, and anyone managing finances in different countries.
 
+## Live Demo & Access
+
+### Hosted Environment
+- **Live Application**: https://iker-finance-site.onrender.com
+- **Backend API Documentation**: https://iker-finance.onrender.com/swagger
+
+**Note**: Deployed on Render's free tier for demonstration and testing purposes.
+
+### Default Test Account
+```
+Email: admin@ikerfinance.com
+Password: Admin@123456
+```
+
 ## What This Application Does
 
 - **Track Expenses**: Record your daily spending and automatically convert between currencies
