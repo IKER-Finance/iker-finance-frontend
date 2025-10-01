@@ -3,15 +3,23 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+
+// PrimeReact imports
+import { InputText } from 'primereact/inputtext';
+import { Password } from 'primereact/password';
+import { Button } from 'primereact/button';
+import { Card } from 'primereact/card';
+import { Message } from 'primereact/message';
+
 import { authService, tokenService } from '../../services';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    firstName: '',
-    lastName: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -47,114 +55,105 @@ export default function RegisterPage() {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center"
-      style={{
-        backgroundImage:
-          "url('https://www.idfcfirstbank.com/content/dam/idfcfirstbank/images/blog/finance/difference-between-money-finance-funds-717X404.jpg')",
-      }}
+    <div className="flex justify-content-center align-items-center min-h-screen"
+         style={{
+           backgroundImage: "url('https://www.idfcfirstbank.com/content/dam/idfcfirstbank/images/blog/finance/difference-between-money-finance-funds-717X404.jpg')",
+           backgroundSize: 'cover',
+           backgroundPosition: 'center',
+           backgroundRepeat: 'no-repeat',
+           minHeight: '100vh',
+         }}
     >
-      <div className="w-full max-w-md bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-md animate-fadeInUp">
-        <h1 className="text-2xl font-bold text-center mb-6">Register for IKER Finance</h1>
-
+      <Card title="Register for IKER Finance" className="w-full md:w-4 lg:w-3 shadow-4" style={{
+      background: 'rgba(255, 255, 255, 0.85)',
+      backdropFilter: 'blur(8px)',
+      borderRadius: '1rem',
+      width: '100%',
+      maxWidth: '400px',  
+      margin: '0 auto',    
+    }}>
+        
         {error && (
-          <div className="mb-4 text-red-600 bg-red-100 border border-red-300 rounded-lg p-2 text-sm animate-fadeInUp animate-delay-200">
-            {error}
-          </div>
+          <Message severity="error" text={error} className="mb-3" />
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="animate-fadeInUp animate-delay-200">
-            <label htmlFor="firstName" className="block text-sm font-medium mb-1">
-              First Name
-            </label>
-            <input
-              type="text"
+        <form onSubmit={handleSubmit} className="p-fluid">
+          <div className="field mb-3">
+            <label htmlFor="firstName">First Name</label>
+            <InputText
               id="firstName"
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
-          <div className="animate-fadeInUp animate-delay-400">
-            <label htmlFor="lastName" className="block text-sm font-medium mb-1">
-              Last Name
-            </label>
-            <input
-              type="text"
+          <div className="field mb-3">
+            <label htmlFor="lastName">Last Name</label>
+            <InputText
               id="lastName"
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
-          <div className="animate-fadeInUp animate-delay-600">
-            <label htmlFor="email" className="block text-sm font-medium mb-1">
-              Email
-            </label>
-            <input
-              type="email"
+          <div className="field mb-3">
+            <label htmlFor="email">Email</label>
+            <InputText
               id="email"
+              type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
-          <div className="animate-fadeInUp animate-delay-800">
-            <label htmlFor="password" className="block text-sm font-medium mb-1">
-              Password
-            </label>
-            <input
-              type="password"
+          <div className="field mb-3">
+            <label htmlFor="password">Password</label>
+            <Password
               id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
+              feedback={false}
+              toggleMask
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
-          <div className="animate-fadeInUp animate-delay-1000">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">
-              Confirm Password
-            </label>
-            <input
-              type="password"
+          <div className="field mb-4">
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <Password
               id="confirmPassword"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
+              feedback={false}
+              toggleMask
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
-          <button
+          <Button
             type="submit"
-            disabled={loading}
-            className="w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 animate-fadeInUp animate-delay-1200"
-          >
-            {loading ? 'Registering...' : 'Register'}
-          </button>
+            label={loading ? 'Registering...' : 'Register'}
+            icon="pi pi-user-plus"
+            loading={loading}
+            className="w-full"
+          />
         </form>
 
-        <p className="text-sm text-center mt-6 animate-fadeInUp animate-delay-1200">
+        <p className="text-center mt-4">
           Already have an account?{' '}
-          <Link href="/login" className="text-indigo-600 hover:underline">
+          <Link href="/login" className="text-primary font-medium">
             Login here
           </Link>
         </p>
-      </div>
+      </Card>
     </div>
   );
 }
