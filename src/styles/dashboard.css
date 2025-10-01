@@ -1,0 +1,265 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f8fafc;
+}
+
+.layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.layout-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  z-index: 1000;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.layout-topbar-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e40af;
+  text-decoration: none;
+}
+
+.layout-topbar-right-icons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.layout-sidebar {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 280px;
+  height: calc(100vh - 60px);
+  background: white;
+  border-right: 1px solid #e2e8f0;
+  overflow-y: auto;
+  z-index: 999;
+}
+
+.layout-menu {
+  list-style: none;
+  padding: 1rem 0;
+  margin: 0;
+}
+
+.layout-menuitem-root-text {
+  padding: 1rem 1.5rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.layout-menu li {
+  margin: 0;
+}
+
+.layout-menu a {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: #475569;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.layout-menu a:hover {
+  background-color: #f1f5f9;
+  color: #1e40af;
+}
+
+.layout-menu a.active-route {
+  background-color: #eff6ff;
+  color: #1e40af;
+  border-left-color: #1e40af;
+  font-weight: 500;
+}
+
+.layout-menuitem-icon {
+  margin-right: 0.75rem;
+  font-size: 1rem;
+}
+
+.layout-menuitem-text {
+  font-size: 0.875rem;
+}
+
+.layout-main-container {
+  margin-left: 280px;
+  margin-top: 60px;
+  min-height: calc(100vh - 60px);
+  width: calc(100vw - 280px);
+}
+
+.layout-main {
+  padding: 2rem;
+}
+
+.surface-ground {
+  background-color: #f8fafc;
+}
+
+.p-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 1.5rem;
+}
+
+.p-card .p-card-body {
+  padding: 1.5rem;
+}
+
+.p-card .p-card-content {
+  padding: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.col-12 {
+  grid-column: 1 / -1;
+}
+
+.p-button {
+  background-color: #3b82f6;
+  border: 1px solid #3b82f6;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.p-button:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.p-button-text {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #3b82f6;
+}
+
+.p-button-text:hover {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+h1 {
+  margin: 0 0 0.5rem 0;
+  color: #1e293b;
+}
+
+h3 {
+  margin: 0 0 1rem 0;
+  color: #334155;
+}
+
+.text-600 {
+  color: #64748b;
+}
+
+.text-900 {
+  color: #1e293b;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-4 { margin-bottom: 1rem; }
+
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+
+@media (max-width: 768px) {
+  .layout-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .layout-main-container {
+    margin-left: 0;
+    width: 100vw;
+  }
+  
+  .layout-main {
+    padding: 1rem;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.p-dropdown {
+  width: 100%;
+}
+
+.pi {
+  font-style: normal;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.align-items-center {
+  align-items: center;
+}

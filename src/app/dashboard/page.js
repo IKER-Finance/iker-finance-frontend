@@ -2,32 +2,21 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { tokenService } from '../../services';
+import PAGE_ROUTES from '../../constants/page-constants';
 
-export default function Dashboard() {
+export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!tokenService.isAuthenticated()) {
-      router.push('/login');
-    }
+    router.replace(PAGE_ROUTES.overview);
   }, [router]);
 
-  const handleLogout = () => {
-    tokenService.removeToken();
-    router.push('/login');
-  };
-
   return (
-    <div style={{ padding: '2rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1>IKER Finance Dashboard</h1>
-        <button onClick={handleLogout} className="logout-btn">
-          Logout
-        </button>
+    <div className="flex align-items-center justify-content-center min-h-screen">
+      <div className="text-center">
+        <i className="pi pi-spin pi-spinner text-4xl text-primary"></i>
+        <p className="text-lg text-600 mt-3">Loading dashboard...</p>
       </div>
-      <p>Welcome to your finance dashboard!</p>
-      <p>More features coming soon...</p>
     </div>
   );
 }
