@@ -3,14 +3,13 @@
 import React, { useEffect, useContext } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Ripple } from 'primereact/ripple';
 import { classNames } from 'primereact/utils';
 import { MenuContext } from './context/menu-context';
 
 const AppMenuItem = (props) => {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { activeMenu, setActiveMenu } = useContext(MenuContext);
 
   const item = props.item;
@@ -18,15 +17,11 @@ const AppMenuItem = (props) => {
   const isActiveRoute = item?.to && pathname === item?.to;
   const active = activeMenu === key;
 
-  const onRouteChange = (url) => {
-    if (item?.to && item?.to === url) {
+  useEffect(() => {
+    if (item?.to && item?.to === pathname) {
       setActiveMenu(key);
     }
-  };
-
-useEffect(() => {
-  onRouteChange(pathname);
-}, [pathname, searchParams, onRouteChange]);
+  }, [pathname, item, key, setActiveMenu]);
 
   const itemClick = (event) => {
     if (item?.disabled) {
@@ -74,7 +69,7 @@ useEffect(() => {
         <div className="layout-menuitem-root-text">{item?.label}</div>
       )}
       
-      {(!item?.to || item?.items) && item?.visible !== false ? (
+      {!props.root && (!item?.to || item?.items) && item?.visible !== false ? (
         <Link
           href={item?.url || '#'}
           onClick={(e) => itemClick(e)}
@@ -100,7 +95,6 @@ useEffect(() => {
         >
           <i className={classNames('layout-menuitem-icon', item?.icon)}></i>
           <span className="layout-menuitem-text">{item?.label}</span>
-          {item?.items && <i className="pi pi-fw pi-angle-down layout-submenu-toggler"></i>}
           <Ripple />
         </Link>
       ) : null}
