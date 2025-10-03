@@ -9,14 +9,12 @@ export const IKER_FINANCE_MENU_ITEMS = [
     label: 'TRANSACTIONS',
     items: [
       { label: 'All Transactions', icon: 'pi pi-fw pi-list', to: '/dashboard/transactions' },
-      { label: 'Add Transaction', icon: 'pi pi-fw pi-plus', to: '/dashboard/transactions/add' },
     ],
   },
   {
     label: 'BUDGETS',
     items: [
-      { label: 'All Budgets', icon: 'pi pi-fw pi-chart-pie', to: '/dashboard/budgets' },
-      { label: 'Add Budget', icon: 'pi pi-fw pi-plus', to: '/dashboard/budgets/add' },
+      { label: 'Manage Budgets', icon: 'pi pi-fw pi-wallet', to: '/dashboard/budgets' },
     ],
   },
   {
