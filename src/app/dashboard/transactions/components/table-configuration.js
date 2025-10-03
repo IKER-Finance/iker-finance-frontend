@@ -28,7 +28,7 @@ export const amountTemplate = (rowData, homeCurrency) => {
       </span>
       {!isHomeCurrency && (
         <span className="text-sm text-500">
-          ≈ {homeCurrency?.symbol}{rowData.convertedAmount.toFixed(2)} @ {rowData.exchangeRate}
+          ≈ {rowData.convertedAmount.toFixed(2)} {rowData.convertedCurrencyCode} @ {rowData.exchangeRate}
         </span>
       )}
     </div>
