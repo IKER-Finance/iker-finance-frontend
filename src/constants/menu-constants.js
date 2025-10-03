@@ -9,7 +9,6 @@ export const IKER_FINANCE_MENU_ITEMS = [
     label: 'TRANSACTIONS',
     items: [
       { label: 'All Transactions', icon: 'pi pi-fw pi-list', to: '/dashboard/transactions' },
-      { label: 'Add Transaction', icon: 'pi pi-fw pi-plus', to: '/dashboard/transactions/add' },
     ],
   },
   {
