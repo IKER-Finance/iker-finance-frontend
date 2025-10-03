@@ -5,12 +5,9 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Tag } from 'primereact/tag';
 import { Skeleton } from 'primereact/skeleton';
 import { selectUser } from '../../../redux/feature/auth-slice';
-import { apiClient } from '../../../services';
+import { transactionService, budgetService } from '../../../services';
 import PAGE_ROUTES from '../../../constants/page-constants';
 
 export default function OverviewPage() {
@@ -24,7 +21,6 @@ export default function OverviewPage() {
     monthlyExpenses: 0,
     activeBudgets: 0,
     recentTransactions: [],
-    budgetStatus: []
   });
 
   useEffect(() => {
@@ -35,19 +31,41 @@ export default function OverviewPage() {
     try {
       setLoading(true);
       
-      // For now, we'll set static data until we implement the transaction/budget services
-      setTimeout(() => {
-        setDashboardData({
-          totalBalance: 0,
-          monthlyIncome: 0,
-          monthlyExpenses: 0,
-          activeBudgets: 0,
-          recentTransactions: [],
-          budgetStatus: []
-        });
-        setLoading(false);
-      }, 1000);
+      const now = new Date();
+      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
       
+      const [summaryData, transactionsData, budgetsData] = await Promise.all([
+        transactionService.getTransactionSummary({
+          startDate: firstDayOfMonth.toISOString().split('T')[0],
+          endDate: lastDayOfMonth.toISOString().split('T')[0]
+        }).catch(err => {
+          console.error('Summary error:', err);
+          return null;
+        }),
+        transactionService.getTransactions({ pageSize: 5, pageNumber: 1 }).catch(err => {
+          console.error('Transactions error:', err);
+          return { data: [] };
+        }),
+        budgetService.getBudgets({ status: 'Active' }).catch(err => {
+          console.error('Budgets error:', err);
+          return { totalCount: 0 };
+        })
+      ]);
+
+      const income = summaryData?.totalIncome || 0;
+      const expenses = summaryData?.totalExpenses || 0;
+      const balance = income - expenses;
+
+      setDashboardData({
+        totalBalance: balance,
+        monthlyIncome: income,
+        monthlyExpenses: expenses,
+        activeBudgets: budgetsData?.totalCount || 0,
+        recentTransactions: transactionsData?.data || []
+      });
+      
+      setLoading(false);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
       setLoading(false);
@@ -61,6 +79,14 @@ export default function OverviewPage() {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount);
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('sv-SE', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   const renderSummaryCard = (title, amount, icon, color, isLoading = false) => {
@@ -95,14 +121,8 @@ export default function OverviewPage() {
             </h1>
             <p className="text-600 text-lg">Here&apos;s your financial overview</p>
           </div>
-          <Button 
-            label="Add Transaction" 
-            icon="pi pi-plus" 
-            onClick={() => router.push(PAGE_ROUTES.addTransaction)}
-          />
         </div>
 
-        {/* Summary Cards */}
         <div className="grid mb-4">
           <div className="col-12 md:col-6 lg:col-3">
             {renderSummaryCard(
@@ -145,30 +165,72 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        {/* Recent Transactions */}
         <div className="grid">
           <div className="col-12">
             <Card>
               <div className="flex justify-content-between align-items-center mb-3">
                 <h3 className="text-xl font-semibold">Recent Transactions</h3>
-                <Button 
-                  label="View All" 
-                  icon="pi pi-external-link" 
-                  text 
-                  onClick={() => router.push(PAGE_ROUTES.transactions)}
-                />
+                {!loading && dashboardData.recentTransactions.length > 0 && (
+                  <Button 
+                    label="View All" 
+                    icon="pi pi-external-link" 
+                    text 
+                    onClick={() => router.push(PAGE_ROUTES.transactions)}
+                  />
+                )}
               </div>
               
-              <div className="text-center py-4">
-                <i className="pi pi-info-circle text-4xl text-400 mb-3"></i>
-                <p className="text-600 text-lg">No transactions yet.</p>
-                <Button 
-                  label="Add Your First Transaction" 
-                  icon="pi pi-plus" 
-                  className="mt-3"
-                  onClick={() => router.push(PAGE_ROUTES.addTransaction)}
-                />
-              </div>
+              {loading ? (
+                <div>
+                  <Skeleton height="60px" className="mb-2" />
+                  <Skeleton height="60px" className="mb-2" />
+                  <Skeleton height="60px" />
+                </div>
+              ) : dashboardData.recentTransactions.length === 0 ? (
+                <div className="text-center py-4">
+                  <i className="pi pi-info-circle text-4xl text-400 mb-3"></i>
+                  <p className="text-600 text-lg">No transactions yet.</p>
+                  <Button 
+                    label="Add Your First Transaction" 
+                    icon="pi pi-plus" 
+                    className="mt-3"
+                    onClick={() => router.push(PAGE_ROUTES.addTransaction)}
+                  />
+                </div>
+              ) : (
+                <div>
+                  {dashboardData.recentTransactions.map((transaction) => (
+                    <div 
+                      key={transaction.id}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '1rem',
+                        borderBottom: '1px solid #e2e8f0',
+                        cursor: 'pointer'
+                      }}
+                      onClick={() => router.push(`${PAGE_ROUTES.transactions}/${transaction.id}`)}
+                    >
+                      <div>
+                        <p style={{ fontWeight: 600, margin: 0 }}>
+                          {transaction.description || 'No description'}
+                        </p>
+                        <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>
+                          {formatDate(transaction.date)} • {transaction.categoryName || 'Uncategorized'}
+                        </p>
+                      </div>
+                      <div style={{ 
+                        fontWeight: 700,
+                        color: transaction.type === 'Income' ? '#10B981' : '#EF4444'
+                      }}>
+                        {transaction.type === 'Income' ? '+' : '-'}
+                        {formatCurrency(transaction.amount)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </Card>
           </div>
         </div>
