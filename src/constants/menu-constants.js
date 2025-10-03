@@ -17,11 +17,27 @@ export const IKER_FINANCE_MENU_ITEMS = [
       { label: 'Manage Budgets', icon: 'pi pi-fw pi-wallet', to: '/dashboard/budgets' },
     ],
   },
-  // TODO: Implement Categories Management
-  // {
-  //   label: 'CATEGORIES',
-  //   items: [
-  //     { label: 'Manage Categories', icon: 'pi pi-fw pi-tags', to: '/dashboard/categories' },
-  //   ],
-  // },
+  {
+    label: 'CATEGORIES',
+    items: [
+      // TODO: Replace under-construction page with actual implementation
+      { label: 'Manage Categories', icon: 'pi pi-fw pi-tags', to: '/dashboard/categories' },
+    ],
+  },
+  {
+    label: 'REPORTS',
+    items: [
+      // TODO: Replace under-construction pages with actual implementations
+      { label: 'Financial Reports', icon: 'pi pi-fw pi-chart-bar', to: '/dashboard/reports' },
+      { label: 'Export Data', icon: 'pi pi-fw pi-download', to: '/dashboard/export' },
+    ],
+  },
+  {
+    label: 'SUPPORT',
+    items: [
+      // TODO: Replace under-construction pages with actual implementations
+      { label: 'Help & FAQ', icon: 'pi pi-fw pi-question-circle', to: '/dashboard/support/faq' },
+      { label: 'Submit Feedback', icon: 'pi pi-fw pi-comment', to: '/dashboard/support/feedback' },
+    ],
+  },
 ];
