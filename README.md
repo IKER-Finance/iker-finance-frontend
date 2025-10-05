@@ -6,7 +6,6 @@ Multi-currency personal finance management web application built with Next.js 14
 [![React](https://img.shields.io/badge/React-18-61DAFB)](https://reactjs.org/)
 [![Redux](https://img.shields.io/badge/Redux-Toolkit-764ABC)](https://redux-toolkit.js.org/)
 [![PrimeReact](https://img.shields.io/badge/PrimeReact-10.9-007AD9)](https://primereact.org/)
-[![SASS](https://img.shields.io/badge/SASS-1.93-CC6699)](https://sass-lang.com/)
 
 ## Live Demo
 
@@ -42,7 +41,7 @@ Modern web application for managing multi-currency personal finances with real-t
 - **PrimeReact** for enterprise-grade UI components
 - **Axios** for API communication with interceptors
 - **Joi** for client-side validation
-- **SASS** for modular styling
+- **CSS** for styling
 
 **Design Patterns**
 
@@ -180,7 +179,6 @@ const newTransaction = await transactionService.createTransaction(data);
 - PrimeReact 10.9 - Enterprise UI component library
 - PrimeFlex 4.0 - Utility CSS framework
 - PrimeIcons 7.0 - Icon library
-- SASS 1.93 - CSS preprocessor
 - Tailwind CSS 3.4 - Utility-first CSS
 
 **Data & Validation**
@@ -238,8 +236,7 @@ style(dashboard): improve mobile responsiveness
 3. Use PrimeReact components for UI consistency
 4. Implement client-side validation with Joi
 5. Keep components small and focused
-6. Use SASS modules for component-specific styles
-7. Follow existing project structure patterns
+6. Follow existing project structure patterns
 
 ## Environment Variables
 
