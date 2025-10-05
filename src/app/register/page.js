@@ -43,7 +43,6 @@ export default function RegisterPage() {
         setLoadingCurrencies(false);
       }
     };
-
     fetchCurrencies();
   }, []);
 
@@ -72,140 +71,151 @@ export default function RegisterPage() {
       await authService.register(formData);
       router.push(PAGE_ROUTES.overview);
     } catch (err) {
-      // Error is already handled by Redux in authService
+      // Handled by Redux
     }
   };
 
-  const currencyOptionTemplate = (option) => {
-    return (
-      <div>
-        <span className="font-semibold">{option.code}</span> - {option.name} ({option.symbol})
-      </div>
-    );
-  };
+  const currencyOptionTemplate = (option) => (
+    <div>
+      <span className="font-semibold">{option.code}</span> - {option.name} ({option.symbol})
+    </div>
+  );
 
   const displayError = error || authError;
 
   return (
     <div
-      className="flex justify-content-center align-items-center min-h-screen"
+      className="flex justify-content-between align-items-center min-h-screen"
       style={{
-        backgroundImage: "url('https://www.idfcfirstbank.com/content/dam/idfcfirstbank/images/blog/finance/difference-between-money-finance-funds-717X404.jpg')",
+        backgroundImage: "url('https://png.pngtree.com/thumb_back/fh260/background/20250512/pngtree-blue-gradient-soft-background-vector-image_17280771.jpg')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         minHeight: '100vh',
+        padding: '0 5rem',
       }}
     >
-      <Card
-        title="Register for IKER Finance"
-        className="shadow-4"
-        style={{
-          background: 'rgba(255, 255, 255, 0.85)',
-          backdropFilter: 'blur(8px)',
-          borderRadius: '1rem',
-          width: '100%',
-          maxWidth: '400px',  
-          margin: '0 auto',    
-        }}
-      >
-        {displayError && <Message severity="error" text={displayError} className="mb-3" />}
-
-        <form onSubmit={handleSubmit} className="p-fluid">
-          <div className="field mb-3">
-            <label htmlFor="firstName">First Name</label>
-            <InputText
-              id="firstName"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="field mb-3">
-            <label htmlFor="lastName">Last Name</label>
-            <InputText
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="field mb-3">
-            <label htmlFor="email">Email</label>
-            <InputText
-              id="email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="field mb-3">
-            <label htmlFor="homeCurrencyId">Home Currency</label>
-            <Dropdown
-              id="homeCurrencyId"
-              name="homeCurrencyId"
-              value={formData.homeCurrencyId}
-              options={currencies}
-              onChange={(e) => setFormData({ ...formData, homeCurrencyId: e.value })}
-              optionLabel="code"
-              optionValue="id"
-              placeholder="Select your currency"
-              itemTemplate={currencyOptionTemplate}
-              disabled={loadingCurrencies}
-              required
-            />
-          </div>
-
-          <div className="field mb-3">
-            <label htmlFor="password">Password</label>
-            <Password
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              feedback={false}
-              toggleMask
-              required
-            />
-          </div>
-
-          <div className="field mb-4">
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <Password
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              feedback={false}
-              toggleMask
-              required
-            />
-          </div>
-
-          <Button
-            type="submit"
-            label={loading ? 'Registering...' : 'Register'}
-            icon="pi pi-user-plus"
-            loading={loading}
-            disabled={loadingCurrencies}
-            className="w-full"
-          />
-        </form>
-
-        <p className="text-center mt-4">
-          Already have an account?{' '}
-          <Link href={PAGE_ROUTES.login} className="text-primary font-medium">
-            Login here
-          </Link>
+  
+      <div className="text-white w-6 pr-6">
+        <h1 className="text-6xl font-bold mb-3 drop-shadow-lg">Join IKER Finance</h1>
+        <p className="text-lg opacity-90">
+          Create your account and take control of your financial journey.
+          Get personalized insights, manage your budget, and make smarter financial decisions.
         </p>
-      </Card>
+      </div>
+
+ 
+      <div className="w-6 flex justify-content-center">
+        <Card
+          title="Register for IKER Finance"
+          className="shadow-6"
+          style={{
+            background: 'rgba(255, 255, 255, 0.9)',
+            backdropFilter: 'blur(8px)',
+            borderRadius: '1rem',
+            width: '100%',
+            maxWidth: '400px',
+            padding: '1.5rem',
+          }}
+        >
+          {displayError && <Message severity="error" text={displayError} className="mb-3" />}
+
+          <form onSubmit={handleSubmit} className="p-fluid">
+            <div className="field mb-3">
+              <label htmlFor="firstName">First Name</label>
+              <InputText
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="field mb-3">
+              <label htmlFor="lastName">Last Name</label>
+              <InputText
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="field mb-3">
+              <label htmlFor="email">Email</label>
+              <InputText
+                id="email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="field mb-3">
+              <label htmlFor="homeCurrencyId">Home Currency</label>
+              <Dropdown
+                id="homeCurrencyId"
+                name="homeCurrencyId"
+                value={formData.homeCurrencyId}
+                options={currencies}
+                onChange={(e) => setFormData({ ...formData, homeCurrencyId: e.value })}
+                optionLabel="code"
+                optionValue="id"
+                placeholder="Select your currency"
+                itemTemplate={currencyOptionTemplate}
+                disabled={loadingCurrencies}
+                required
+              />
+            </div>
+
+            <div className="field mb-3">
+              <label htmlFor="password">Password</label>
+              <Password
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                feedback={false}
+                toggleMask
+                required
+              />
+            </div>
+
+            <div className="field mb-4">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <Password
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                feedback={false}
+                toggleMask
+                required
+              />
+            </div>
+
+            <Button
+              type="submit"
+              label={loading ? 'Registering...' : 'Register'}
+              icon="pi pi-user-plus"
+              loading={loading}
+              disabled={loadingCurrencies}
+              className="w-full"
+            />
+          </form>
+
+          <p className="text-center mt-4">
+            Already have an account?{' '}
+            <Link href={PAGE_ROUTES.login} className="text-primary font-medium">
+              Login here
+            </Link>
+          </p>
+        </Card>
+      </div>
     </div>
   );
 }
