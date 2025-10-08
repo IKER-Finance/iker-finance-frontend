@@ -124,7 +124,7 @@ export default function OverviewPage() {
         </div>
 
         <div className="grid mb-4">
-          <div className="col-12 md:col-6 lg:col-3">
+          <div className="col-12 md:col-6 lg:col-4">
             {renderSummaryCard(
               'Total Balance',
               dashboardData.totalBalance,
@@ -134,6 +134,7 @@ export default function OverviewPage() {
             )}
           </div>
           
+          {/* TEMPORARILY HIDDEN - Monthly Income Card
           <div className="col-12 md:col-6 lg:col-3">
             {renderSummaryCard(
               'Monthly Income',
@@ -143,8 +144,9 @@ export default function OverviewPage() {
               loading
             )}
           </div>
+          */}
           
-          <div className="col-12 md:col-6 lg:col-3">
+          <div className="col-12 md:col-6 lg:col-4">
             {renderSummaryCard(
               'Monthly Expenses',
               dashboardData.monthlyExpenses,
@@ -154,7 +156,7 @@ export default function OverviewPage() {
             )}
           </div>
           
-          <div className="col-12 md:col-6 lg:col-3">
+          <div className="col-12 md:col-6 lg:col-4">
             {renderSummaryCard(
               'Active Budgets',
               dashboardData.activeBudgets,
