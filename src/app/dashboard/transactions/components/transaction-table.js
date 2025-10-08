@@ -51,14 +51,13 @@ const TransactionTable = ({
 
   const actionBodyTemplate = (rowData) => {
     return (
-      <Fragment>
+      <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', alignItems: 'center' }}>
         <Button 
           icon="pi pi-pencil" 
           rounded 
           outlined 
           severity="info" 
           onClick={() => handleEditTransaction(rowData)} 
-          className="mr-2"
           tooltip="Edit transaction"
           tooltipOptions={{ position: 'top' }}
         />
@@ -71,7 +70,7 @@ const TransactionTable = ({
           tooltip="Delete transaction"
           tooltipOptions={{ position: 'top' }}
         />
-      </Fragment>
+      </div>
     );
   };
 
@@ -102,7 +101,7 @@ const TransactionTable = ({
         {renderColumn()}
         <Column
           header="Actions"
-          style={{ width: '8rem' }}
+          style={{ width: '10rem' }}
           align="center"
           body={actionBodyTemplate}
           frozen
