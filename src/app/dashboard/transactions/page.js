@@ -208,6 +208,7 @@ const TransactionsPage = () => {
 
     return (
       <div className="transaction-summary">
+        {/* TEMPORARILY HIDDEN - Total Income Card
         <div className="summary-card">
           <div className="summary-title">Total Income</div>
           <div className="summary-amount income">
@@ -217,6 +218,7 @@ const TransactionsPage = () => {
             {summary.topIncomeCategories?.reduce((sum, cat) => sum + cat.transactionCount, 0) || 0} transactions
           </div>
         </div>
+        */}
         <div className="summary-card">
           <div className="summary-title">Total Expenses</div>
           <div className="summary-amount expense">
