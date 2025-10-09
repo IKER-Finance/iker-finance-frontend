@@ -4,17 +4,12 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
-/**
- * Preloader overlay rendered into document.body via a portal.
- * Props:
- *   - visible (boolean): whether the overlay is shown
- */
+
 export default function Preloader({ visible }) {
-  // avoid referencing document during SSR
+  
   if (typeof document === 'undefined') return null;
 
-  // You can keep the timeout in the page component; this file is only responsible
-  // for the overlay rendering and animations.
+  
   return createPortal(
     <AnimatePresence>
       {visible && (
