@@ -239,7 +239,7 @@ const BudgetsPage = () => {
         isLoading={loading}
         handleDeleteBudget={handleDeleteBudget}
         confirmDialogVisible={confirmDialogVisible}
-        deletedBudgetName={budgetToDelete?.name}
+        deletedBudgetName={budgetToDelete?.categoryName}
         acceptDeletion={acceptDeletion}
         rejectDeletion={rejectDeletion}
         handleEditBudget={handleEditBudget}

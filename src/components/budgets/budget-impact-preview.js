@@ -60,7 +60,7 @@ export default function BudgetImpactPreview({ impactData, loading = false }) {
           >
             <div className="flex justify-content-between align-items-start mb-2">
               <div>
-                <h5 className="text-base font-semibold m-0 mb-1">{budget.budgetName}</h5>
+                <h5 className="text-base font-semibold m-0 mb-1">{budget.categoryName || budget.budgetName}</h5>
                 <span className="text-xs text-500">
                   {budget.currencySymbol} {budget.currencyCode}
                 </span>

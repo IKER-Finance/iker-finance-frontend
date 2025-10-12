@@ -25,16 +25,7 @@ export const budgetAmountTemplate = (rowData) => {
     maximumFractionDigits: 2,
   }).format(rowData.amount);
 
-  return (
-    <div className="flex flex-column gap-1">
-      <span className="font-semibold">{formattedAmount}</span>
-      {rowData.categories && rowData.categories.length > 0 && (
-        <span className="text-sm text-500">
-          {rowData.categories.length} {rowData.categories.length === 1 ? 'category' : 'categories'}
-        </span>
-      )}
-    </div>
-  );
+  return <span className="font-semibold">{formattedAmount}</span>;
 };
 
 export const budgetDatesTemplate = (rowData) => {
@@ -133,8 +124,8 @@ export const budgetHealthStatusTemplate = (rowData) => {
 export const getTableColumns = () => {
   return [
     {
-      header: 'Budget Name',
-      field: 'name',
+      header: 'Category',
+      field: 'categoryName',
       align: 'left',
       sortable: true,
       style: { minWidth: '12rem' },

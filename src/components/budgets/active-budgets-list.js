@@ -72,7 +72,7 @@ export default function ActiveBudgetsList({
               <div className="flex justify-content-between align-items-start mb-2">
                 <div className="flex-1">
                   <div className="flex align-items-center gap-2 mb-1">
-                    <h4 className="text-lg font-semibold m-0">{budget.name}</h4>
+                    <h4 className="text-lg font-semibold m-0">{budget.categoryName}</h4>
                     <BudgetStatusBadge status={budget.status} size="small" />
                   </div>
                   <p className="text-sm text-600 m-0">
@@ -95,30 +95,6 @@ export default function ActiveBudgetsList({
                 showPercentage={true}
                 height="1.25rem"
               />
-
-              {budget.categories && budget.categories.length > 0 && (
-                <div className="mt-2 pt-2 border-top-1 surface-border">
-                  <p className="text-xs text-500 mb-2">Category Breakdown:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {budget.categories.slice(0, 3).map((category) => (
-                      <div
-                        key={category.categoryId}
-                        className="text-xs px-2 py-1 border-round surface-100"
-                      >
-                        <span className="font-semibold">{category.categoryName}:</span>{' '}
-                        <span className={category.percentageSpent >= 100 ? 'text-red-500' : category.percentageSpent >= 80 ? 'text-orange-500' : 'text-green-500'}>
-                          {category.percentageSpent.toFixed(0)}%
-                        </span>
-                      </div>
-                    ))}
-                    {budget.categories.length > 3 && (
-                      <div className="text-xs px-2 py-1 border-round surface-100 text-500">
-                        +{budget.categories.length - 3} more
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
           ))}
 

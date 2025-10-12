@@ -37,7 +37,7 @@ const BudgetTable = ({
   const getConfirmationModalMessage = () => {
     return (
       <div>
-        Are you sure you want to delete the budget <b>&quot;{deletedBudgetName}&quot;</b>?
+        Are you sure you want to delete the budget for category <b>&quot;{deletedBudgetName}&quot;</b>?
       </div>
     );
   };
