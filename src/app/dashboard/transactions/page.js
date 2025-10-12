@@ -210,41 +210,58 @@ const TransactionsPage = () => {
     setCurrentPage(0);
   };
 
-  const formatCurrency = (amount, currencyCode, currencySymbol) => {
+  const formatCurrency = (amount, _currencyCode, currencySymbol) => {
     return `${currencySymbol}${amount.toFixed(2)}`;
   };
 
   const renderSummary = () => {
     if (!summary) return null;
 
+    const expenseTransactionCount = summary.topExpenseCategories?.reduce((sum, cat) => sum + cat.transactionCount, 0) || 0;
+
+    // Find top spending category
+    const topCategory = summary.topExpenseCategories?.length > 0
+      ? summary.topExpenseCategories.reduce((max, cat) =>
+          cat.totalAmount > (max?.totalAmount || 0) ? cat : max,
+          summary.topExpenseCategories[0]
+        )
+      : null;
+
+    const topCategoryPercentage = topCategory && summary.totalExpenses > 0
+      ? ((topCategory.totalAmount / summary.totalExpenses) * 100).toFixed(1)
+      : 0;
+
     return (
       <div className="transaction-summary">
-        {/* TEMPORARILY HIDDEN - Total Income Card
-        <div className="summary-card">
-          <div className="summary-title">Total Income</div>
-          <div className="summary-amount income">
-            {formatCurrency(summary.totalIncome || 0, summary.homeCurrencyCode, summary.homeCurrencySymbol)}
-          </div>
-          <div className="summary-count">
-            {summary.topIncomeCategories?.reduce((sum, cat) => sum + cat.transactionCount, 0) || 0} transactions
-          </div>
-        </div>
-        */}
         <div className="summary-card">
           <div className="summary-title">Total Expenses</div>
           <div className="summary-amount expense">
             {formatCurrency(summary.totalExpenses || 0, summary.homeCurrencyCode, summary.homeCurrencySymbol)}
           </div>
           <div className="summary-count">
-            {summary.topExpenseCategories?.reduce((sum, cat) => sum + cat.transactionCount, 0) || 0} transactions
+            {expenseTransactionCount} transaction{expenseTransactionCount !== 1 ? 's' : ''}
           </div>
         </div>
+
         <div className="summary-card">
-          <div className="summary-title">Net Amount</div>
-          <div className={`summary-amount ${summary.netAmount >= 0 ? 'income' : 'expense'}`}>
-            {formatCurrency(summary.netAmount || 0, summary.homeCurrencyCode, summary.homeCurrencySymbol)}
-          </div>
-          <div className="summary-count">{summary.totalTransactions || 0} total</div>
+          <div className="summary-title">Top Category</div>
+          {topCategory ? (
+            <>
+              <div className="summary-amount expense">
+                {formatCurrency(topCategory.totalAmount || 0, summary.homeCurrencyCode, summary.homeCurrencySymbol)}
+              </div>
+              <div className="summary-count">
+                {topCategory.categoryName} • {topCategoryPercentage}% of total
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="summary-amount" style={{ fontSize: '1.2rem', color: '#64748b' }}>
+                No expenses yet
+              </div>
+              <div className="summary-count">Start tracking your spending</div>
+            </>
+          )}
         </div>
       </div>
     );
