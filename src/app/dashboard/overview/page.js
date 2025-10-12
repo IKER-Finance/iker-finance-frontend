@@ -13,7 +13,7 @@ import PAGE_ROUTES from '../../../constants/page-constants';
 export default function OverviewPage() {
   const user = useSelector(selectUser);
   const router = useRouter();
-  
+
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState({
     totalBalance: 0,
@@ -30,27 +30,33 @@ export default function OverviewPage() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      
+
       const now = new Date();
       const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-      
+
       const [summaryData, transactionsData, budgetsData] = await Promise.all([
-        transactionService.getTransactionSummary({
-          startDate: firstDayOfMonth.toISOString().split('T')[0],
-          endDate: lastDayOfMonth.toISOString().split('T')[0]
-        }).catch(err => {
-          console.error('Summary error:', err);
-          return null;
-        }),
-        transactionService.getTransactions({ pageSize: 5, pageNumber: 1 }).catch(err => {
-          console.error('Transactions error:', err);
-          return { data: [] };
-        }),
-        budgetService.getBudgets({ status: 'Active' }).catch(err => {
-          console.error('Budgets error:', err);
-          return { totalCount: 0 };
-        })
+        transactionService
+          .getTransactionSummary({
+            startDate: firstDayOfMonth.toISOString().split('T')[0],
+            endDate: lastDayOfMonth.toISOString().split('T')[0],
+          })
+          .catch((err) => {
+            console.error('Summary error:', err);
+            return null;
+          }),
+        transactionService
+          .getTransactions({ pageSize: 5, pageNumber: 1 })
+          .catch((err) => {
+            console.error('Transactions error:', err);
+            return { data: [] };
+          }),
+        budgetService
+          .getBudgets({ status: 'Active' })
+          .catch((err) => {
+            console.error('Budgets error:', err);
+            return { totalCount: 0 };
+          }),
       ]);
 
       const income = summaryData?.totalIncome || 0;
@@ -62,9 +68,9 @@ export default function OverviewPage() {
         monthlyIncome: income,
         monthlyExpenses: expenses,
         activeBudgets: budgetsData?.totalCount || 0,
-        recentTransactions: transactionsData?.data || []
+        recentTransactions: transactionsData?.data || [],
       });
-      
+
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
@@ -85,13 +91,19 @@ export default function OverviewPage() {
     return new Date(dateString).toLocaleDateString('sv-SE', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
   const renderSummaryCard = (title, amount, icon, color, isLoading = false) => {
     return (
-      <Card className="text-center">
+      <Card
+        className="text-center shadow-3 p-4 border-round-xl h-full transition-transform transition-duration-300 hover:shadow-5 hover:-translate-y-2 backdrop-blur-sm"
+        style={{
+          background: 'rgba(255, 255, 255, 0.8)',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+        }}
+      >
         {isLoading ? (
           <>
             <Skeleton height="3rem" className="mb-3"></Skeleton>
@@ -101,8 +113,8 @@ export default function OverviewPage() {
         ) : (
           <>
             <i className={`${icon} text-4xl mb-3`} style={{ color }}></i>
-            <h3 className="text-xl font-semibold mb-2">{title}</h3>
-            <p className="text-2xl font-bold" style={{ color }}>
+            <h3 className="text-lg md:text-xl font-semibold mb-2">{title}</h3>
+            <p className="text-xl md:text-2xl font-bold" style={{ color }}>
               {typeof amount === 'number' ? formatCurrency(amount) : amount}
             </p>
           </>
@@ -112,127 +124,152 @@ export default function OverviewPage() {
   };
 
   return (
-    <div className="surface-ground min-h-screen">
-      <div className="p-4">
-        <div className="flex justify-content-between align-items-center mb-4">
-          <div>
-            <h1 className="text-3xl font-bold text-900 mb-1">
-              Welcome back, {user?.firstName || 'User'}!
-            </h1>
-            <p className="text-600 text-lg">Here&apos;s your financial overview</p>
-          </div>
+    <div
+      className="min-h-screen p-3 md:p-5"
+      style={{
+        background:
+          'linear-gradient(135deg, #eef2ff 0%, #e0f2fe 50%, #fef9c3 100%)',
+      }}
+    >
+      <div className="flex flex-column md:flex-row justify-content-between align-items-start md:align-items-center mb-4 gap-2">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-900 mb-1">
+            Welcome back, {user?.firstName || 'User'}!
+          </h1>
+          <p className="text-600 text-base md:text-lg opacity-80">
+            Here&apos;s your financial overview
+          </p>
+        </div>
+      </div>
+
+      <div className="grid mb-4">
+        <div className="col-12 sm:col-6 lg:col-3">
+          {renderSummaryCard(
+            'Total Balance',
+            dashboardData.totalBalance,
+            'pi pi-wallet',
+            '#3B82F6',
+            loading
+          )}
         </div>
 
-        <div className="grid mb-4">
-          <div className="col-12 md:col-6 lg:col-3">
-            {renderSummaryCard(
-              'Total Balance',
-              dashboardData.totalBalance,
-              'pi pi-wallet',
-              '#3B82F6',
-              loading
-            )}
-          </div>
-          
-          <div className="col-12 md:col-6 lg:col-3">
-            {renderSummaryCard(
-              'Monthly Income',
-              dashboardData.monthlyIncome,
-              'pi pi-arrow-up',
-              '#10B981',
-              loading
-            )}
-          </div>
-          
-          <div className="col-12 md:col-6 lg:col-3">
-            {renderSummaryCard(
-              'Monthly Expenses',
-              dashboardData.monthlyExpenses,
-              'pi pi-arrow-down',
-              '#EF4444',
-              loading
-            )}
-          </div>
-          
-          <div className="col-12 md:col-6 lg:col-3">
-            {renderSummaryCard(
-              'Active Budgets',
-              dashboardData.activeBudgets,
-              'pi pi-chart-pie',
-              '#8B5CF6',
-              loading
-            )}
-          </div>
+        <div className="col-12 sm:col-6 lg:col-3">
+          {renderSummaryCard(
+            'Monthly Income',
+            dashboardData.monthlyIncome,
+            'pi pi-arrow-up',
+            '#10B981',
+            loading
+          )}
         </div>
 
-        <div className="grid">
-          <div className="col-12">
-            <Card>
-              <div className="flex justify-content-between align-items-center mb-3">
-                <h3 className="text-xl font-semibold">Recent Transactions</h3>
-                {!loading && dashboardData.recentTransactions.length > 0 && (
-                  <Button 
-                    label="View All" 
-                    icon="pi pi-external-link" 
-                    text 
-                    onClick={() => router.push(PAGE_ROUTES.transactions)}
-                  />
-                )}
-              </div>
-              
-              {loading ? (
-                <div>
-                  <Skeleton height="60px" className="mb-2" />
-                  <Skeleton height="60px" className="mb-2" />
-                  <Skeleton height="60px" />
-                </div>
-              ) : dashboardData.recentTransactions.length === 0 ? (
-                <div className="text-center py-4">
-                  <i className="pi pi-info-circle text-4xl text-400 mb-3"></i>
-                  <p className="text-600 text-lg">No transactions yet.</p>
-                  <Button 
-                    label="Add Your First Transaction" 
-                    icon="pi pi-plus" 
-                    className="mt-3"
-                    onClick={() => router.push(PAGE_ROUTES.addTransaction)}
-                  />
-                </div>
-              ) : (
-                <div>
-                  {dashboardData.recentTransactions.map((transaction) => (
-                    <div 
-                      key={transaction.id}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '1rem',
-                        borderBottom: '1px solid #e2e8f0',
-                        cursor: 'pointer'
-                      }}
-                      onClick={() => router.push(`${PAGE_ROUTES.transactions}/${transaction.id}`)}
-                    >
-                      <div>
-                        <p style={{ fontWeight: 600, margin: 0 }}>
-                          {transaction.description || 'No description'}
-                        </p>
-                        <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>
-                          {formatDate(transaction.date)} • {transaction.categoryName || 'Uncategorized'}
-                        </p>
-                      </div>
-                      <div style={{ 
-                        fontWeight: 700,
-                        color: transaction.type === 'Income' ? '#10B981' : '#EF4444'
-                      }}>
-                        {transaction.type === 'Income' ? '+' : '-'}
-                        {formatCurrency(transaction.amount)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+        <div className="col-12 sm:col-6 lg:col-3">
+          {renderSummaryCard(
+            'Monthly Expenses',
+            dashboardData.monthlyExpenses,
+            'pi pi-arrow-down',
+            '#EF4444',
+            loading
+          )}
+        </div>
+
+        <div className="col-12 sm:col-6 lg:col-3">
+          {renderSummaryCard(
+            'Active Budgets',
+            dashboardData.activeBudgets,
+            'pi pi-chart-pie',
+            '#8B5CF6',
+            loading
+          )}
+        </div>
+      </div>
+      
+      <div className="grid">
+        <div className="col-12">
+          <Card
+            className="shadow-3 border-round-xl backdrop-blur-sm"
+            style={{
+              background: 'rgba(255, 255, 255, 0.85)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+            }}
+          >
+            <div className="flex flex-column sm:flex-row justify-content-between align-items-start sm:align-items-center mb-3 gap-2">
+              <h3 className="text-lg md:text-xl font-semibold">
+                Recent Transactions
+              </h3>
+              {!loading && dashboardData.recentTransactions.length > 0 && (
+                <Button
+                  label="View All"
+                  icon="pi pi-external-link"
+                  text
+                  size="small"
+                  className="hover:text-primary transition-duration-200"
+                  onClick={() => router.push(PAGE_ROUTES.transactions)}
+                />
               )}
-            </Card>
-          </div>
+            </div>
+
+            {loading ? (
+              <div>
+                <Skeleton height="60px" className="mb-2" />
+                <Skeleton height="60px" className="mb-2" />
+                <Skeleton height="60px" />
+              </div>
+            ) : dashboardData.recentTransactions.length === 0 ? (
+              <div className="text-center py-5">
+                <i className="pi pi-info-circle text-4xl text-400 mb-3"></i>
+                <p className="text-600 text-base md:text-lg">
+                  No transactions yet.
+                </p>
+                <Button
+                  label="Add Your First Transaction"
+                  icon="pi pi-plus"
+                  className="mt-3"
+                  onClick={() => router.push(PAGE_ROUTES.addTransaction)}
+                />
+              </div>
+            ) : (
+              <div className="overflow-auto">
+                {dashboardData.recentTransactions.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="flex flex-column sm:flex-row justify-content-between align-items-start sm:align-items-center p-3 border-bottom-1 border-200 cursor-pointer hover:surface-100 transition-duration-200 border-round-sm"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.5)',
+                      backdropFilter: 'blur(4px)',
+                    }}
+                    onClick={() =>
+                      router.push(
+                        `${PAGE_ROUTES.transactions}/${transaction.id}`
+                      )
+                    }
+                  >
+                    <div>
+                      <p className="font-semibold text-900 m-0">
+                        {transaction.description || 'No description'}
+                      </p>
+                      <p className="text-sm text-600 mt-1 mb-0">
+                        {formatDate(transaction.date)} •{' '}
+                        {transaction.categoryName || 'Uncategorized'}
+                      </p>
+                    </div>
+                    <div
+                      className="mt-2 sm:mt-0 text-lg font-bold"
+                      style={{
+                        color:
+                          transaction.type === 'Income'
+                            ? '#10B981'
+                            : '#EF4444',
+                      }}
+                    >
+                      {transaction.type === 'Income' ? '+' : '-'}
+                      {formatCurrency(transaction.amount)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
         </div>
       </div>
     </div>
