@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
-import { Calendar } from 'primereact/calendar';
 import TransactionTable from './components/transaction-table';
 import TransactionForm from './components/transaction-form';
 import {
@@ -32,8 +31,7 @@ import {
   selectSelectedTransaction,
 } from '@/redux/feature/transaction-slice';
 import { selectUser } from '@/redux/feature/auth-slice';
-import { transactionService } from '@/services';
-import { TRANSACTION_TYPE_OPTIONS, TRANSACTION_TYPE_ENUM } from '@/constants/transaction-constants';
+import { transactionService, categoryService } from '@/services';
 import './styles.scss';
 
 const TransactionsPage = () => {
@@ -53,18 +51,28 @@ const TransactionsPage = () => {
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState('');
-  const [dateRange, setDateRange] = useState([null, null]);
+  const [categoryFilter, setCategoryFilter] = useState('');
+  // TODO: Add date range filter state in future
+  // const [dateRange, setDateRange] = useState([null, null]);
+  const [categories, setCategories] = useState([]);
 
-  const typeOptions = [
-    { label: 'All Types', value: '' },
-    ...TRANSACTION_TYPE_OPTIONS,
-  ];
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     fetchTransactionsData();
     fetchSummaryData();
-  }, [currentPage, pageSize, sortBy, sortOrder, searchTerm, typeFilter, dateRange]);
+  }, [currentPage, pageSize, sortBy, sortOrder, searchTerm, categoryFilter]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await categoryService.getCategories();
+      setCategories(response);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    }
+  };
 
   const fetchTransactionsData = async () => {
     dispatch(fetchTransactionsStart());
@@ -77,9 +85,10 @@ const TransactionsPage = () => {
       };
 
       if (searchTerm) params.searchTerm = searchTerm;
-      if (typeFilter) params.type = typeFilter;
-      if (dateRange[0]) params.startDate = dateRange[0].toISOString();
-      if (dateRange[1]) params.endDate = dateRange[1].toISOString();
+      if (categoryFilter) params.categoryId = categoryFilter;
+      // TODO: Add date range filter parameters in future
+      // if (dateRange && dateRange[0]) params.startDate = dateRange[0].toISOString();
+      // if (dateRange && dateRange[1]) params.endDate = dateRange[1].toISOString();
 
       const response = await transactionService.getTransactions(params);
       
@@ -98,8 +107,9 @@ const TransactionsPage = () => {
     dispatch(fetchSummaryStart());
     try {
       const params = {};
-      if (dateRange[0]) params.startDate = dateRange[0].toISOString();
-      if (dateRange[1]) params.endDate = dateRange[1].toISOString();
+      // TODO: Add date range filter parameters in future
+      // if (dateRange && dateRange[0]) params.startDate = dateRange[0].toISOString();
+      // if (dateRange && dateRange[1]) params.endDate = dateRange[1].toISOString();
 
       const response = await transactionService.getTransactionSummary(params);
       dispatch(fetchSummarySuccess(response));
@@ -194,8 +204,9 @@ const TransactionsPage = () => {
 
   const handleClearFilters = () => {
     setSearchTerm('');
-    setTypeFilter('');
-    setDateRange([null, null]);
+    setCategoryFilter('');
+    // TODO: Reset date range filter in future
+    // setDateRange([null, null]);
     setCurrentPage(0);
   };
 
@@ -239,6 +250,15 @@ const TransactionsPage = () => {
     );
   };
 
+  const categoryOptions = [
+    { label: 'All Categories', value: '', id: '' },
+    ...categories.filter(c => c.isActive).map(cat => ({
+      label: cat.name,
+      value: cat.id,
+      id: cat.id
+    }))
+  ];
+
   const renderFilters = () => {
     return (
       <div className="transaction-filters">
@@ -252,25 +272,20 @@ const TransactionsPage = () => {
           />
         </div>
         <div className="filter-item">
-          <label>Type</label>
+          <label>Category</label>
           <Dropdown
-            value={typeFilter}
-            options={typeOptions}
-            onChange={(e) => setTypeFilter(e.value)}
+            value={categoryFilter}
+            options={categoryOptions}
+            onChange={(e) => setCategoryFilter(e.value)}
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select category"
             className="w-full"
+            filter
+            showClear
           />
         </div>
-        <div className="filter-item">
-          <label>Date Range</label>
-          <Calendar
-            value={dateRange}
-            onChange={(e) => setDateRange(e.value)}
-            selectionMode="range"
-            readOnlyInput
-            className="w-full"
-            dateFormat="yy-mm-dd"
-          />
-        </div>
+        {/* TODO: Add date range filter in future - currently experiencing issues with Calendar range selection */}
         <div className="filter-actions">
           <Button
             label="Search"
