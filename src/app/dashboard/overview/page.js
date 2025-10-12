@@ -9,12 +9,16 @@ import { Skeleton } from 'primereact/skeleton';
 import { selectUser } from '../../../redux/feature/auth-slice';
 import { transactionService, budgetService } from '../../../services';
 import PAGE_ROUTES from '../../../constants/page-constants';
+import BudgetSummaryCards from '../../../components/budgets/budget-summary-cards';
+import ActiveBudgetsList from '../../../components/budgets/active-budgets-list';
+import BudgetAlerts from '../../../components/budgets/budget-alerts';
 
 export default function OverviewPage() {
   const user = useSelector(selectUser);
   const router = useRouter();
   
   const [loading, setLoading] = useState(true);
+  const [budgetLoading, setBudgetLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState({
     totalBalance: 0,
     monthlyIncome: 0,
@@ -22,19 +26,21 @@ export default function OverviewPage() {
     activeBudgets: 0,
     recentTransactions: [],
   });
+  const [activeBudgetsData, setActiveBudgetsData] = useState(null);
 
   useEffect(() => {
     fetchDashboardData();
+    fetchActiveBudgets();
   }, []);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      
+
       const now = new Date();
       const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-      
+
       const [summaryData, transactionsData, budgetsData] = await Promise.all([
         transactionService.getTransactionSummary({
           startDate: firstDayOfMonth.toISOString().split('T')[0],
@@ -64,11 +70,23 @@ export default function OverviewPage() {
         activeBudgets: budgetsData?.totalCount || 0,
         recentTransactions: transactionsData?.data || []
       });
-      
+
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
       setLoading(false);
+    }
+  };
+
+  const fetchActiveBudgets = async () => {
+    try {
+      setBudgetLoading(true);
+      const budgetsData = await budgetService.getActiveBudgets(true);
+      setActiveBudgetsData(budgetsData);
+      setBudgetLoading(false);
+    } catch (error) {
+      console.error('Failed to fetch active budgets:', error);
+      setBudgetLoading(false);
     }
   };
 
@@ -133,7 +151,7 @@ export default function OverviewPage() {
               loading
             )}
           </div>
-          
+
           {/* TEMPORARILY HIDDEN - Monthly Income Card
           <div className="col-12 md:col-6 lg:col-3">
             {renderSummaryCard(
@@ -145,7 +163,7 @@ export default function OverviewPage() {
             )}
           </div>
           */}
-          
+
           <div className="col-12 md:col-6 lg:col-4">
             {renderSummaryCard(
               'Monthly Expenses',
@@ -155,7 +173,7 @@ export default function OverviewPage() {
               loading
             )}
           </div>
-          
+
           <div className="col-12 md:col-6 lg:col-4">
             {renderSummaryCard(
               'Active Budgets',
@@ -166,6 +184,42 @@ export default function OverviewPage() {
             )}
           </div>
         </div>
+
+        {/* Budget Summary Section */}
+        {activeBudgetsData && activeBudgetsData.totalBudgets > 0 && (
+          <>
+            <div className="mb-3">
+              <h2 className="text-2xl font-bold text-900 mb-1">Budget Overview</h2>
+              <p className="text-600">Track your spending against budgets</p>
+            </div>
+
+            <BudgetSummaryCards
+              budgetData={activeBudgetsData}
+              loading={budgetLoading}
+              homeCurrencyCode={activeBudgetsData?.homeCurrencyCode}
+              homeCurrencySymbol={activeBudgetsData?.homeCurrencySymbol}
+            />
+
+            <div className="grid mt-4 mb-4">
+              {activeBudgetsData?.budgetsWarning + activeBudgetsData?.budgetsOverBudget > 0 && (
+                <div className="col-12 lg:col-4">
+                  <BudgetAlerts
+                    budgets={activeBudgetsData?.budgets || []}
+                    loading={budgetLoading}
+                  />
+                </div>
+              )}
+              <div className={activeBudgetsData?.budgetsWarning + activeBudgetsData?.budgetsOverBudget > 0 ? 'col-12 lg:col-8' : 'col-12'}>
+                <ActiveBudgetsList
+                  budgets={activeBudgetsData?.budgets || []}
+                  loading={budgetLoading}
+                  onViewAll={() => router.push(PAGE_ROUTES.budgets)}
+                  maxDisplay={5}
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="grid">
           <div className="col-12">
