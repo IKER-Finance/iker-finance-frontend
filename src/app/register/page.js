@@ -10,8 +10,7 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
 import { Dropdown } from 'primereact/dropdown';
-import { authService } from '../../services/api-service/auth-service';
-import { currencyService } from '../../services/api-service/currency-service';
+import { authService, currencyService } from '../../services';
 import { selectAuthLoading, selectAuthError } from '../../redux/feature/auth-slice';
 import PAGE_ROUTES from '../../constants/page-constants';
 
