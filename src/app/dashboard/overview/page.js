@@ -368,12 +368,11 @@ export default function OverviewPage() {
                           {formatDate(transaction.date)} • {transaction.categoryName || 'Uncategorized'}
                         </p>
                       </div>
-                      <div style={{ 
+                      <div style={{
                         fontWeight: 700,
-                        color: transaction.type === 'Income' ? '#10B981' : '#EF4444'
+                        color: '#EF4444'
                       }}>
-                        {transaction.type === 'Income' ? '+' : '-'}
-                        {formatCurrency(transaction.amount)}
+                        -{formatCurrency(transaction.amount)}
                       </div>
                     </div>
                   ))}
