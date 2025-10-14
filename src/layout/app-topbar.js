@@ -60,7 +60,6 @@ const AppTopbar = forwardRef((props, ref) => {
       <Link href={PAGE_ROUTES.overview} className="layout-topbar-logo">
         <span>IKER Finance</span>
       </Link>
-
       <button
         ref={menubuttonRef}
         type="button"

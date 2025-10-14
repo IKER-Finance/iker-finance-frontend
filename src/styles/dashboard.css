@@ -171,7 +171,8 @@ body {
   left: 0;
   width: 280px;
   height: calc(100vh - 60px);
-  background: white;
+  background-color: rgba(255, 255, 255, 0.8); 
+  backdrop-filter: blur(10px); 
   border-right: 1px solid #e2e8f0;
   overflow-y: auto;
   z-index: 999;

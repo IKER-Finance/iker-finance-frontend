@@ -9,6 +9,7 @@ import { Skeleton } from 'primereact/skeleton';
 import { selectUser } from '../../../redux/feature/auth-slice';
 import { transactionService, budgetService } from '../../../services';
 import PAGE_ROUTES from '../../../constants/page-constants';
+import styles from '../OverviewPage.module.css'; 
 
 export default function OverviewPage() {
   const user = useSelector(selectUser);
@@ -112,7 +113,7 @@ export default function OverviewPage() {
   };
 
   return (
-    <div className="surface-ground min-h-screen">
+    <div className={`${styles.pageContainer} surface-ground min-h-screen`}>
       <div className="p-4">
         <div className="flex justify-content-between align-items-center mb-4">
           <div>
