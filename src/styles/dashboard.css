@@ -169,7 +169,6 @@ body {
   position: fixed;
   top: 60px;
   left: 0;
-  width: 280px;
   height: calc(100vh - 60px);
   background-color: rgba(255, 255, 255, 0.8); 
   backdrop-filter: blur(10px); 
@@ -178,6 +177,39 @@ body {
   z-index: 999;
   box-shadow: 7px 0 5px rgba(7, 182, 226, 0.05);
   border-top-right-radius: 15px;
+  width: 80px; 
+  transition: width 0.3s ease; 
+}
+
+
+.layout-sidebar:hover {
+  width: 280px; 
+}
+
+
+.layout-main-container {
+  margin-left: 80px; 
+  transition: margin-left 0.3s ease; 
+}
+
+.layout-sidebar:hover + .layout-main-container {
+  margin-left: 280px; 
+}
+
+.layout-sidebar .layout-menuitem-root-text,
+.layout-sidebar .layout-menuitem-text {
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap; 
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+
+.layout-sidebar:hover .layout-menuitem-root-text,
+.layout-sidebar:hover .layout-menuitem-text {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.1s; 
 }
 
 .layout-menu {
