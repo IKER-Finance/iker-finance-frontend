@@ -7,7 +7,6 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
 import { transactionValidationSchema } from '../validation';
-import { TRANSACTION_TYPE_OPTIONS, TRANSACTION_TYPE_ENUM } from '@/constants/transaction-constants';
 import { currencyService, categoryService, budgetService } from '@/services';
 import BudgetImpactPreview from '@/components/budgets/budget-impact-preview';
 

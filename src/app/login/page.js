@@ -10,7 +10,7 @@ import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
-import { authService } from '../../services/api-service/auth-service';
+import { authService } from '../../services';
 import { selectAuthLoading, selectAuthError } from '../../redux/feature/auth-slice';
 import PAGE_ROUTES from '../../constants/page-constants';
 

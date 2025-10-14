@@ -20,11 +20,16 @@ export default function OverviewPage() {
   const [loading, setLoading] = useState(true);
   const [budgetLoading, setBudgetLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState({
-    totalBalance: 0,
-    monthlyIncome: 0,
-    monthlyExpenses: 0,
-    activeBudgets: 0,
+    totalSpent: 0,
+    budgetsOnTrack: 0,
+    totalBudgets: 0,
+    lastMonthSpent: 0,
+    spendingChange: 0,
+    spendingChangePercent: 0,
+    currenciesUsed: [],
     recentTransactions: [],
+    homeCurrencyCode: 'SEK',
+    homeCurrencySymbol: 'kr',
   });
   const [activeBudgetsData, setActiveBudgetsData] = useState(null);
 
@@ -32,6 +37,21 @@ export default function OverviewPage() {
     fetchDashboardData();
     fetchActiveBudgets();
   }, []);
+
+  // Update budgets on track when activeBudgetsData changes
+  useEffect(() => {
+    if (activeBudgetsData && activeBudgetsData.budgets) {
+      const onTrack = activeBudgetsData.budgets.filter(
+        budget => budget.utilizationPercentage < 80
+      ).length;
+
+      setDashboardData(prev => ({
+        ...prev,
+        budgetsOnTrack: onTrack,
+        totalBudgets: activeBudgetsData.totalBudgets || 0,
+      }));
+    }
+  }, [activeBudgetsData]);
 
   const fetchDashboardData = async () => {
     try {
@@ -41,12 +61,23 @@ export default function OverviewPage() {
       const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-      const [summaryData, transactionsData, budgetsData] = await Promise.all([
+      // Last month dates
+      const firstDayOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastDayOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+
+      const [currentMonthSummary, lastMonthSummary, transactionsData, budgetsData] = await Promise.all([
         transactionService.getTransactionSummary({
           startDate: firstDayOfMonth.toISOString().split('T')[0],
           endDate: lastDayOfMonth.toISOString().split('T')[0]
         }).catch(err => {
-          console.error('Summary error:', err);
+          console.error('Current month summary error:', err);
+          return null;
+        }),
+        transactionService.getTransactionSummary({
+          startDate: firstDayOfLastMonth.toISOString().split('T')[0],
+          endDate: lastDayOfLastMonth.toISOString().split('T')[0]
+        }).catch(err => {
+          console.error('Last month summary error:', err);
           return null;
         }),
         transactionService.getTransactions({ pageSize: 5, pageNumber: 1 }).catch(err => {
@@ -59,16 +90,31 @@ export default function OverviewPage() {
         })
       ]);
 
-      const income = summaryData?.totalIncome || 0;
-      const expenses = summaryData?.totalExpenses || 0;
-      const balance = income - expenses;
+      const totalSpent = currentMonthSummary?.totalExpenses || 0;
+      const lastMonthSpent = lastMonthSummary?.totalExpenses || 0;
+      const spendingChange = totalSpent - lastMonthSpent;
+      const spendingChangePercent = lastMonthSpent > 0
+        ? ((spendingChange / lastMonthSpent) * 100)
+        : 0;
+
+      // Extract unique currencies from transactions
+      const currencies = [...new Set(
+        (transactionsData?.data || [])
+          .map(t => t.currencyCode)
+          .filter(Boolean)
+      )];
 
       setDashboardData({
-        totalBalance: balance,
-        monthlyIncome: income,
-        monthlyExpenses: expenses,
-        activeBudgets: budgetsData?.totalCount || 0,
-        recentTransactions: transactionsData?.data || []
+        totalSpent,
+        budgetsOnTrack: 0, // Will be calculated from activeBudgetsData
+        totalBudgets: budgetsData?.totalCount || 0,
+        lastMonthSpent,
+        spendingChange,
+        spendingChangePercent,
+        currenciesUsed: currencies,
+        recentTransactions: transactionsData?.data || [],
+        homeCurrencyCode: currentMonthSummary?.homeCurrencyCode || 'SEK',
+        homeCurrencySymbol: currentMonthSummary?.homeCurrencySymbol || 'kr',
       });
 
       setLoading(false);
@@ -107,28 +153,6 @@ export default function OverviewPage() {
     });
   };
 
-  const renderSummaryCard = (title, amount, icon, color, isLoading = false) => {
-    return (
-      <Card className="text-center">
-        {isLoading ? (
-          <>
-            <Skeleton height="3rem" className="mb-3"></Skeleton>
-            <Skeleton height="2rem" className="mb-2"></Skeleton>
-            <Skeleton height="1.5rem"></Skeleton>
-          </>
-        ) : (
-          <>
-            <i className={`${icon} text-4xl mb-3`} style={{ color }}></i>
-            <h3 className="text-xl font-semibold mb-2">{title}</h3>
-            <p className="text-2xl font-bold" style={{ color }}>
-              {typeof amount === 'number' ? formatCurrency(amount) : amount}
-            </p>
-          </>
-        )}
-      </Card>
-    );
-  };
-
   return (
     <div className="surface-ground min-h-screen">
       <div className="p-4">
@@ -142,46 +166,114 @@ export default function OverviewPage() {
         </div>
 
         <div className="grid mb-4">
-          <div className="col-12 md:col-6 lg:col-4">
-            {renderSummaryCard(
-              'Total Balance',
-              dashboardData.totalBalance,
-              'pi pi-wallet',
-              '#3B82F6',
-              loading
-            )}
-          </div>
-
-          {/* TEMPORARILY HIDDEN - Monthly Income Card
+          {/* Card 1: Total Spent This Month */}
           <div className="col-12 md:col-6 lg:col-3">
-            {renderSummaryCard(
-              'Monthly Income',
-              dashboardData.monthlyIncome,
-              'pi pi-arrow-up',
-              '#10B981',
-              loading
-            )}
+            <Card className="text-center">
+              {loading ? (
+                <>
+                  <Skeleton height="3rem" className="mb-3"></Skeleton>
+                  <Skeleton height="2rem" className="mb-2"></Skeleton>
+                  <Skeleton height="1.5rem"></Skeleton>
+                </>
+              ) : (
+                <>
+                  <i className="pi pi-wallet text-4xl mb-3" style={{ color: '#EF4444' }}></i>
+                  <h3 className="text-xl font-semibold mb-2">Total Spent</h3>
+                  <p className="text-2xl font-bold" style={{ color: '#EF4444' }}>
+                    {formatCurrency(dashboardData.totalSpent, dashboardData.homeCurrencyCode)}
+                  </p>
+                  <p className="text-sm text-500 mt-2">This month</p>
+                </>
+              )}
+            </Card>
           </div>
-          */}
 
-          <div className="col-12 md:col-6 lg:col-4">
-            {renderSummaryCard(
-              'Monthly Expenses',
-              dashboardData.monthlyExpenses,
-              'pi pi-arrow-down',
-              '#EF4444',
-              loading
-            )}
+          {/* Card 2: Budget Status */}
+          <div className="col-12 md:col-6 lg:col-3">
+            <Card className="text-center">
+              {loading || budgetLoading ? (
+                <>
+                  <Skeleton height="3rem" className="mb-3"></Skeleton>
+                  <Skeleton height="2rem" className="mb-2"></Skeleton>
+                  <Skeleton height="1.5rem"></Skeleton>
+                </>
+              ) : (
+                <>
+                  <i className="pi pi-chart-pie text-4xl mb-3" style={{ color: '#8B5CF6' }}></i>
+                  <h3 className="text-xl font-semibold mb-2">Budget Status</h3>
+                  <p className="text-2xl font-bold" style={{ color: '#8B5CF6' }}>
+                    {dashboardData.budgetsOnTrack} of {dashboardData.totalBudgets}
+                  </p>
+                  <p className="text-sm text-500 mt-2">
+                    {dashboardData.totalBudgets > 0
+                      ? `${Math.round((dashboardData.budgetsOnTrack / dashboardData.totalBudgets) * 100)}% on track`
+                      : 'No budgets set'
+                    }
+                  </p>
+                </>
+              )}
+            </Card>
           </div>
 
-          <div className="col-12 md:col-6 lg:col-4">
-            {renderSummaryCard(
-              'Active Budgets',
-              dashboardData.activeBudgets,
-              'pi pi-chart-pie',
-              '#8B5CF6',
-              loading
-            )}
+          {/* Card 3: vs Last Month */}
+          <div className="col-12 md:col-6 lg:col-3">
+            <Card className="text-center">
+              {loading ? (
+                <>
+                  <Skeleton height="3rem" className="mb-3"></Skeleton>
+                  <Skeleton height="2rem" className="mb-2"></Skeleton>
+                  <Skeleton height="1.5rem"></Skeleton>
+                </>
+              ) : (
+                <>
+                  <i
+                    className={`pi ${dashboardData.spendingChange > 0 ? 'pi-arrow-up' : 'pi-arrow-down'} text-4xl mb-3`}
+                    style={{ color: dashboardData.spendingChange > 0 ? '#EF4444' : '#10B981' }}
+                  ></i>
+                  <h3 className="text-xl font-semibold mb-2">vs Last Month</h3>
+                  <p
+                    className="text-2xl font-bold"
+                    style={{ color: dashboardData.spendingChange > 0 ? '#EF4444' : '#10B981' }}
+                  >
+                    {dashboardData.spendingChange > 0 ? '+' : ''}
+                    {formatCurrency(Math.abs(dashboardData.spendingChange), dashboardData.homeCurrencyCode)}
+                  </p>
+                  <p className="text-sm text-500 mt-2">
+                    {dashboardData.lastMonthSpent > 0
+                      ? `${dashboardData.spendingChange > 0 ? '↑' : '↓'} ${Math.abs(dashboardData.spendingChangePercent).toFixed(1)}%`
+                      : 'No previous data'
+                    }
+                  </p>
+                </>
+              )}
+            </Card>
+          </div>
+
+          {/* Card 4: Currencies Used */}
+          <div className="col-12 md:col-6 lg:col-3">
+            <Card className="text-center">
+              {loading ? (
+                <>
+                  <Skeleton height="3rem" className="mb-3"></Skeleton>
+                  <Skeleton height="2rem" className="mb-2"></Skeleton>
+                  <Skeleton height="1.5rem"></Skeleton>
+                </>
+              ) : (
+                <>
+                  <i className="pi pi-globe text-4xl mb-3" style={{ color: '#3B82F6' }}></i>
+                  <h3 className="text-xl font-semibold mb-2">Currencies Used</h3>
+                  <p className="text-2xl font-bold" style={{ color: '#3B82F6' }}>
+                    {dashboardData.currenciesUsed.length || 0}
+                  </p>
+                  <p className="text-sm text-500 mt-2">
+                    {dashboardData.currenciesUsed.length > 0
+                      ? dashboardData.currenciesUsed.join(', ')
+                      : 'No transactions yet'
+                    }
+                  </p>
+                </>
+              )}
+            </Card>
           </div>
         </div>
 
@@ -276,12 +368,11 @@ export default function OverviewPage() {
                           {formatDate(transaction.date)} • {transaction.categoryName || 'Uncategorized'}
                         </p>
                       </div>
-                      <div style={{ 
+                      <div style={{
                         fontWeight: 700,
-                        color: transaction.type === 'Income' ? '#10B981' : '#EF4444'
+                        color: '#EF4444'
                       }}>
-                        {transaction.type === 'Income' ? '+' : '-'}
-                        {formatCurrency(transaction.amount)}
+                        -{formatCurrency(transaction.amount)}
                       </div>
                     </div>
                   ))}

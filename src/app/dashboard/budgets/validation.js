@@ -84,8 +84,8 @@ export const budgetValidationSchema = Joi.object({
     }),
   period: Joi.number()
     .integer()
-    .min(0)
-    .max(4)
+    .min(2)
+    .max(5)
     .required()
     .messages({
       'any.required': 'Budget period is required.',

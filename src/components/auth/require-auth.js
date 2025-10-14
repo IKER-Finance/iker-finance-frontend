@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectIsAuthenticated, selectAuthLoading } from '../../redux/feature/auth-slice';
-import { authService } from '../../services/api-service/auth-service';
+import { authService } from '../../services';
 import PAGE_ROUTES from '../../constants/page-constants';
 
 const RequireAuth = ({ children }) => {

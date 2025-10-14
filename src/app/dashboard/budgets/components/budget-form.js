@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Sidebar } from 'primereact/sidebar';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
@@ -6,8 +6,9 @@ import { InputNumber } from 'primereact/inputnumber';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 import { budgetValidationSchema } from '../validation';
-import { BUDGET_PERIOD_OPTIONS } from '@/constants/budget-constants';
+import { BUDGET_PERIOD_OPTIONS, BUDGET_PERIOD_MAP, isUnusuallyLargeBudget } from '@/constants/budget-constants';
 import { currencyService, categoryService } from '@/services';
 
 const BudgetForm = ({
@@ -21,7 +22,7 @@ const BudgetForm = ({
   const [categoryId, setCategoryId] = useState(null);
   const [amount, setAmount] = useState(null);
   const [currencyId, setCurrencyId] = useState(null);
-  const [period, setPeriod] = useState(2);
+  const [period, setPeriod] = useState(3);
   const [startDate, setStartDate] = useState(new Date());
   const [description, setDescription] = useState('');
   const [isActive, setIsActive] = useState(true);
@@ -29,6 +30,8 @@ const BudgetForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currencies, setCurrencies] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [showWarningDialog, setShowWarningDialog] = useState(false);
+  const [pendingPayload, setPendingPayload] = useState(null);
 
   useEffect(() => {
     if (isVisible) {
@@ -42,7 +45,7 @@ const BudgetForm = ({
       setCategoryId(selectedBudget.categoryId || null);
       setAmount(selectedBudget.amount || null);
       setCurrencyId(selectedBudget.currencyId || null);
-      setPeriod(selectedBudget.period ?? 2);
+      setPeriod(selectedBudget.period ?? 3);
       setStartDate(selectedBudget.startDate ? new Date(selectedBudget.startDate) : new Date());
       setDescription(selectedBudget.description || '');
       setIsActive(selectedBudget.isActive ?? true);
@@ -97,6 +100,20 @@ const BudgetForm = ({
 
     setErrors({});
 
+    // Check if amount is unusually large
+    if (isUnusuallyLargeBudget(amount, period)) {
+      setPendingPayload(payload);
+      setShowWarningDialog(true);
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Proceed with submission
+    await submitBudget(payload);
+  };
+
+  const submitBudget = async (payload) => {
+    setIsSubmitting(true);
     try {
       await onSubmit(payload, selectedBudget?.id);
       clearForm();
@@ -106,11 +123,22 @@ const BudgetForm = ({
     }
   };
 
+  const handleConfirmLargeBudget = async () => {
+    setShowWarningDialog(false);
+    await submitBudget(pendingPayload);
+    setPendingPayload(null);
+  };
+
+  const handleCancelLargeBudget = () => {
+    setShowWarningDialog(false);
+    setPendingPayload(null);
+  };
+
   const clearForm = () => {
     setCategoryId(null);
     setAmount(null);
     setCurrencyId(null);
-    setPeriod(2);
+    setPeriod(3);
     setStartDate(new Date());
     setDescription('');
     setIsActive(true);
@@ -127,14 +155,27 @@ const BudgetForm = ({
   const actionButtonLabel = selectedBudget ? 'Update' : 'Create';
 
   return (
-    <Sidebar
-      header={headerText}
-      className="w-full md:w-30rem lg:w-35rem"
-      visible={isVisible}
-      position="right"
-      onHide={handleCancel}
-      blockScroll
-    >
+    <>
+      <ConfirmDialog
+        visible={showWarningDialog}
+        onHide={handleCancelLargeBudget}
+        message={`You are about to create a ${BUDGET_PERIOD_MAP[period]?.toLowerCase()} budget with an unusually large amount. Are you sure you want to proceed?`}
+        header="Unusually Large Budget Amount"
+        icon="pi pi-exclamation-triangle"
+        accept={handleConfirmLargeBudget}
+        reject={handleCancelLargeBudget}
+        acceptLabel="Yes, Create Budget"
+        rejectLabel="Cancel"
+        acceptClassName="p-button-warning"
+      />
+      <Sidebar
+        header={headerText}
+        className="w-full md:w-30rem lg:w-35rem"
+        visible={isVisible}
+        position="right"
+        onHide={handleCancel}
+        blockScroll
+      >
       <div className="flex flex-column gap-3 pt-3">
         <div className="flex flex-column gap-2">
           <label className="font-semibold">Category</label>
@@ -258,6 +299,7 @@ const BudgetForm = ({
         </div>
       </div>
     </Sidebar>
+    </>
   );
 };
 

@@ -1,16 +1,3 @@
-import { Tag } from 'primereact/tag';
-import { TRANSACTION_TYPE_MAP, TRANSACTION_TYPE_ENUM } from '@/constants/transaction-constants';
-
-export const transactionTypeTemplate = (rowData) => {
-  const typeLabel = TRANSACTION_TYPE_MAP[rowData.type] || 'Unknown';
-  return (
-    <Tag
-      value={typeLabel}
-      severity={rowData.type === TRANSACTION_TYPE_ENUM.INCOME ? 'success' : 'danger'}
-    />
-  );
-};
-
 export const amountTemplate = (rowData, homeCurrency) => {
   const formattedAmount = new Intl.NumberFormat('sv-SE', {
     style: 'currency',
@@ -20,10 +7,10 @@ export const amountTemplate = (rowData, homeCurrency) => {
   }).format(rowData.amount);
 
   const isHomeCurrency = rowData.currencyId === homeCurrency?.id;
-  
+
   return (
     <div className="flex flex-column gap-1">
-      <span className={rowData.type === TRANSACTION_TYPE_ENUM.INCOME ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'}>
+      <span className="text-red-600 font-semibold">
         {formattedAmount}
       </span>
       {!isHomeCurrency && (
@@ -63,14 +50,6 @@ export const getTableColumns = (homeCurrency) => {
       align: 'left',
       sortable: true,
       style: { minWidth: '12rem' },
-    },
-    {
-      header: 'Type',
-      field: 'type',
-      body: transactionTypeTemplate,
-      align: 'center',
-      sortable: true,
-      style: { width: '8rem' },
     },
     {
       header: 'Category',
