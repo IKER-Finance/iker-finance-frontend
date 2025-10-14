@@ -45,10 +45,8 @@ export default function LoginPage() {
 
   return (
     <>
-      {/* Render the Preloader as an overlay / portal */}
       <Preloader visible={showPreloader} />
 
-      {/* Page content is rendered underneath the overlay */}
       <div
         className="flex justify-content-between align-items-center min-h-screen"
         style={{

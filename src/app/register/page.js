@@ -71,7 +71,6 @@ export default function RegisterPage() {
       await authService.register(formData);
       router.push(PAGE_ROUTES.overview);
     } catch (err) {
-      // Handled by Redux
     }
   };
 
