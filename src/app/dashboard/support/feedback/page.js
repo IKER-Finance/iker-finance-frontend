@@ -1,7 +1,13 @@
 'use client';
 
-import UnderConstruction from '../../../../components/common/under-construction';
+import FeedbackForm from './components/feedback-form';
 
 export default function FeedbackPage() {
-  return <UnderConstruction pageName="Submit Feedback" />;
+  return (
+    <div className="grid">
+      <div className="col-12">
+        <FeedbackForm />
+      </div>
+    </div>
+  );
 }
