@@ -64,7 +64,24 @@ const BudgetsPage = () => {
         SearchTerm: filters.searchTerm || undefined,
       };
       const response = await budgetService.getBudgets(params);
-      dispatch(fetchBudgetsSuccess(response));
+
+      // Fetch summaries for each budget
+      const budgetsWithSummaries = await Promise.all(
+        response.data.map(async (budget) => {
+          try {
+            const summary = await budgetService.getBudgetSummary(budget.id);
+            return { ...budget, summary };
+          } catch (error) {
+            console.error(`Failed to fetch summary for budget ${budget.id}:`, error);
+            return budget; // Return budget without summary on error
+          }
+        })
+      );
+
+      dispatch(fetchBudgetsSuccess({
+        ...response,
+        data: budgetsWithSummaries
+      }));
     } catch (error) {
       dispatch(fetchBudgetsFailure(error.message));
       toast.current?.show({
@@ -224,7 +241,7 @@ const BudgetsPage = () => {
         isLoading={loading}
         handleDeleteBudget={handleDeleteBudget}
         confirmDialogVisible={confirmDialogVisible}
-        deletedBudgetName={budgetToDelete?.name}
+        deletedBudgetName={budgetToDelete?.categoryName}
         acceptDeletion={acceptDeletion}
         rejectDeletion={rejectDeletion}
         handleEditBudget={handleEditBudget}

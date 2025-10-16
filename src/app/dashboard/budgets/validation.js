@@ -61,12 +61,16 @@ const dateValidation = (name) => {
 };
 
 export const budgetValidationSchema = Joi.object({
-  name: textValidation({ 
-    name: 'Budget name', 
-    required: true, 
-    maxLength: 100,
-    minLength: 3 
-  }),
+  categoryId: Joi.number()
+    .integer()
+    .min(1)
+    .required()
+    .messages({
+      'any.required': 'Category is required.',
+      'number.base': 'Valid category must be selected.',
+      'number.integer': 'Valid category must be selected.',
+      'number.min': 'Valid category must be selected.',
+    }),
   amount: amountValidation('Budget amount'),
   currencyId: Joi.number()
     .integer()
@@ -80,8 +84,8 @@ export const budgetValidationSchema = Joi.object({
     }),
   period: Joi.number()
     .integer()
-    .min(0)
-    .max(4)
+    .min(2)
+    .max(5)
     .required()
     .messages({
       'any.required': 'Budget period is required.',
@@ -90,17 +94,9 @@ export const budgetValidationSchema = Joi.object({
       'number.max': 'Valid budget period must be selected.',
     }),
   startDate: dateValidation('Start date'),
-  description: textValidation({ 
-    name: 'Description', 
-    required: false, 
-    maxLength: 500 
+  description: textValidation({
+    name: 'Description',
+    required: false,
+    maxLength: 500
   }),
-  categoryAllocations: Joi.array()
-    .items(
-      Joi.object({
-        categoryId: Joi.number().integer().min(1).required(),
-        amount: Joi.number().min(0.01).precision(2).required(),
-      })
-    )
-    .default([]),
 });

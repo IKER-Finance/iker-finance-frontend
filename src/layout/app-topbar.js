@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Menu } from 'primereact/menu';
 import { LayoutContext } from './context/layout-context';
 import { selectUser } from '../redux/feature/auth-slice';
-import { authService } from '../services/api-service/auth-service';
+import { authService } from '../services';
 import PAGE_ROUTES from '../constants/page-constants';
 
 const AppTopbar = forwardRef((props, ref) => {

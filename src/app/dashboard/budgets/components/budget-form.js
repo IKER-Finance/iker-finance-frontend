@@ -1,16 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Sidebar } from 'primereact/sidebar';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
-import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 import { budgetValidationSchema } from '../validation';
-import { BUDGET_PERIOD_OPTIONS } from '@/constants/budget-constants';
+import { BUDGET_PERIOD_OPTIONS, BUDGET_PERIOD_MAP, isUnusuallyLargeBudget } from '@/constants/budget-constants';
 import { currencyService, categoryService } from '@/services';
 
 const BudgetForm = ({
@@ -21,19 +19,19 @@ const BudgetForm = ({
   onSubmit,
   isLoading,
 }) => {
-  const [name, setName] = useState('');
+  const [categoryId, setCategoryId] = useState(null);
   const [amount, setAmount] = useState(null);
   const [currencyId, setCurrencyId] = useState(null);
-  const [period, setPeriod] = useState(2);
+  const [period, setPeriod] = useState(3);
   const [startDate, setStartDate] = useState(new Date());
   const [description, setDescription] = useState('');
   const [isActive, setIsActive] = useState(true);
-  const [categoryAllocations, setCategoryAllocations] = useState([]);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currencies, setCurrencies] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [showWarningDialog, setShowWarningDialog] = useState(false);
+  const [pendingPayload, setPendingPayload] = useState(null);
 
   useEffect(() => {
     if (isVisible) {
@@ -44,14 +42,13 @@ const BudgetForm = ({
 
   useEffect(() => {
     if (selectedBudget) {
-      setName(selectedBudget.name || '');
+      setCategoryId(selectedBudget.categoryId || null);
       setAmount(selectedBudget.amount || null);
       setCurrencyId(selectedBudget.currencyId || null);
-      setPeriod(selectedBudget.period ?? 2);
+      setPeriod(selectedBudget.period ?? 3);
       setStartDate(selectedBudget.startDate ? new Date(selectedBudget.startDate) : new Date());
       setDescription(selectedBudget.description || '');
       setIsActive(selectedBudget.isActive ?? true);
-      setCategoryAllocations(selectedBudget.categories || []);
     }
   }, [selectedBudget]);
 
@@ -77,16 +74,12 @@ const BudgetForm = ({
     setIsSubmitting(true);
 
     const payload = {
-      name,
+      categoryId,
       amount,
       currencyId,
       period,
       startDate: startDate.toISOString(),
       description: description || null,
-      categoryAllocations: categoryAllocations.map(ca => ({
-        categoryId: ca.categoryId,
-        amount: ca.amount,
-      })),
       isActive,
     };
 
@@ -99,13 +92,6 @@ const BudgetForm = ({
       });
     }
 
-    if (categoryAllocations.length > 0) {
-      const totalAllocated = categoryAllocations.reduce((sum, ca) => sum + (ca.amount || 0), 0);
-      if (totalAllocated > amount) {
-        fieldErrors.categoryAllocations = 'Total category allocations cannot exceed budget amount';
-      }
-    }
-
     if (Object.keys(fieldErrors).length > 0) {
       setErrors({ ...fieldErrors });
       setIsSubmitting(false);
@@ -114,6 +100,20 @@ const BudgetForm = ({
 
     setErrors({});
 
+    // Check if amount is unusually large
+    if (isUnusuallyLargeBudget(amount, period)) {
+      setPendingPayload(payload);
+      setShowWarningDialog(true);
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Proceed with submission
+    await submitBudget(payload);
+  };
+
+  const submitBudget = async (payload) => {
+    setIsSubmitting(true);
     try {
       await onSubmit(payload, selectedBudget?.id);
       clearForm();
@@ -123,18 +123,27 @@ const BudgetForm = ({
     }
   };
 
+  const handleConfirmLargeBudget = async () => {
+    setShowWarningDialog(false);
+    await submitBudget(pendingPayload);
+    setPendingPayload(null);
+  };
+
+  const handleCancelLargeBudget = () => {
+    setShowWarningDialog(false);
+    setPendingPayload(null);
+  };
+
   const clearForm = () => {
-    setName('');
+    setCategoryId(null);
     setAmount(null);
     setCurrencyId(null);
-    setPeriod(2);
+    setPeriod(3);
     setStartDate(new Date());
     setDescription('');
     setIsActive(true);
-    setCategoryAllocations([]);
     setSelectedBudget(null);
     setErrors({});
-    setSelectedCategories([]);
     setIsVisible(false);
   };
 
@@ -142,86 +151,50 @@ const BudgetForm = ({
     clearForm();
   };
 
-  const handleAddCategory = () => {
-    if (!selectedCategories || selectedCategories.length === 0) return;
-
-    const newAllocations = [...categoryAllocations];
-    const categoriesToAdd = Array.isArray(selectedCategories) ? selectedCategories : [selectedCategories];
-    
-    categoriesToAdd.forEach(cat => {
-      if (!newAllocations.find(a => a.categoryId === cat.id)) {
-        newAllocations.push({
-          categoryId: cat.id,
-          categoryName: cat.name,
-          amount: 0,
-        });
-      }
-    });
-    setCategoryAllocations(newAllocations);
-    setSelectedCategories([]);
-  };
-
-  const handleRemoveCategory = (categoryId) => {
-    setCategoryAllocations(categoryAllocations.filter(ca => ca.categoryId !== categoryId));
-  };
-
-  const handleCategoryAmountChange = (categoryId, value) => {
-    setCategoryAllocations(categoryAllocations.map(ca =>
-      ca.categoryId === categoryId ? { ...ca, amount: value } : ca
-    ));
-  };
-
-  const categoryAmountTemplate = (rowData) => {
-    return (
-      <InputNumber
-        value={rowData.amount}
-        onValueChange={(e) => handleCategoryAmountChange(rowData.categoryId, e.value)}
-        mode="decimal"
-        minFractionDigits={2}
-        maxFractionDigits={2}
-        min={0.01}
-        className="w-full"
-      />
-    );
-  };
-
-  const categoryActionTemplate = (rowData) => {
-    return (
-      <Button
-        icon="pi pi-times"
-        rounded
-        text
-        severity="danger"
-        onClick={() => handleRemoveCategory(rowData.categoryId)}
-      />
-    );
-  };
-
-  const totalAllocated = categoryAllocations.reduce((sum, ca) => sum + (ca.amount || 0), 0);
-  const remainingBudget = (amount || 0) - totalAllocated;
-
-  const headerText = selectedBudget ? 'Edit Budget' : 'Add New Budget';
-  const actionButtonLabel = selectedBudget ? 'Update' : 'Add';
+  const headerText = selectedBudget ? 'Edit Budget' : 'Create Budget';
+  const actionButtonLabel = selectedBudget ? 'Update' : 'Create';
 
   return (
-    <Sidebar
-      header={headerText}
-      className="w-full md:w-30rem lg:w-35rem"
-      visible={isVisible}
-      position="right"
-      onHide={handleCancel}
-      blockScroll
-    >
+    <>
+      <ConfirmDialog
+        visible={showWarningDialog}
+        onHide={handleCancelLargeBudget}
+        message={`You are about to create a ${BUDGET_PERIOD_MAP[period]?.toLowerCase()} budget with an unusually large amount. Are you sure you want to proceed?`}
+        header="Unusually Large Budget Amount"
+        icon="pi pi-exclamation-triangle"
+        accept={handleConfirmLargeBudget}
+        reject={handleCancelLargeBudget}
+        acceptLabel="Yes, Create Budget"
+        rejectLabel="Cancel"
+        acceptClassName="p-button-warning"
+      />
+      <Sidebar
+        header={headerText}
+        className="w-full md:w-30rem lg:w-35rem"
+        visible={isVisible}
+        position="right"
+        onHide={handleCancel}
+        blockScroll
+      >
       <div className="flex flex-column gap-3 pt-3">
         <div className="flex flex-column gap-2">
-          <label className="font-semibold">Budget Name</label>
-          <InputText
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className={errors.name ? 'p-invalid' : ''}
-            placeholder="Enter budget name"
+          <label className="font-semibold">Category</label>
+          <Dropdown
+            value={categoryId}
+            options={categories.filter(c => c.isActive)}
+            onChange={(e) => setCategoryId(e.value)}
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Select category"
+            className={errors.categoryId ? 'p-invalid w-full' : 'w-full'}
+            filter
+            disabled={!!selectedBudget}
+            appendTo="self"
           />
-          {errors.name && <small className="p-error">{errors.name}</small>}
+          {errors.categoryId && <small className="p-error">{errors.categoryId}</small>}
+          {selectedBudget && (
+            <small className="text-500">Category cannot be changed when editing a budget</small>
+          )}
         </div>
 
         <div className="flex flex-column gap-2">
@@ -309,54 +282,6 @@ const BudgetForm = ({
           </div>
         )}
 
-        <div className="flex flex-column gap-2 pt-3 border-top-1 surface-border">
-          <label className="font-semibold">Category Allocations (Optional)</label>
-          
-          <div className="flex gap-2">
-            <Dropdown
-              value={selectedCategories}
-              options={categories.filter(c => c.isActive && !categoryAllocations.find(ca => ca.categoryId === c.id))}
-              onChange={(e) => setSelectedCategories(e.value || [])}
-              optionLabel="name"
-              placeholder="Select categories"
-              className="flex-1"
-              filter
-              showClear
-              multiple
-              appendTo="self"
-            />
-            <Button
-              icon="pi pi-plus"
-              onClick={handleAddCategory}
-              disabled={!selectedCategories || selectedCategories.length === 0}
-            />
-          </div>
-
-          {categoryAllocations.length > 0 && (
-            <div className="mt-2">
-              <DataTable value={categoryAllocations} size="small">
-                <Column field="categoryName" header="Category" />
-                <Column body={categoryAmountTemplate} header="Amount" />
-                <Column body={categoryActionTemplate} style={{ width: '3rem' }} />
-              </DataTable>
-              
-              <div className="mt-2 p-2 surface-100 border-round">
-                <div className="flex justify-content-between mb-1">
-                  <span>Total Allocated:</span>
-                  <span className="font-semibold">{totalAllocated.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-content-between">
-                  <span>Remaining:</span>
-                  <span className={`font-semibold ${remainingBudget < 0 ? 'text-red-500' : 'text-green-500'}`}>
-                    {remainingBudget.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-          {errors.categoryAllocations && <small className="p-error">{errors.categoryAllocations}</small>}
-        </div>
-
         <div className="flex gap-2 pt-3 border-top-1 surface-border">
           <Button 
             label={actionButtonLabel} 
@@ -374,6 +299,7 @@ const BudgetForm = ({
         </div>
       </div>
     </Sidebar>
+    </>
   );
 };
 

@@ -19,6 +19,35 @@ export const budgetService = {
     }
   },
 
+  async getBudgetSummary(id) {
+    try {
+      const response = await apiClient.get(`/budgets/${id}/summary`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || error.response?.data?.message || 'Failed to fetch budget summary');
+    }
+  },
+
+  async getActiveBudgets(includeCategories = true) {
+    try {
+      const response = await apiClient.get('/budgets/active', {
+        params: { includeCategories }
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || error.response?.data?.message || 'Failed to fetch active budgets');
+    }
+  },
+
+  async previewBudgetImpact(transactionData) {
+    try {
+      const response = await apiClient.post('/budgets/preview-impact', transactionData);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || error.response?.data?.message || 'Failed to preview budget impact');
+    }
+  },
+
   async createBudget(data) {
     try {
       const response = await apiClient.post('/budgets', data);

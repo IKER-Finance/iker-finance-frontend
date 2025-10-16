@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Sidebar } from 'primereact/sidebar';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
@@ -7,8 +7,8 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
 import { transactionValidationSchema } from '../validation';
-import { TRANSACTION_TYPE_OPTIONS, TRANSACTION_TYPE_ENUM } from '@/constants/transaction-constants';
-import { currencyService, categoryService } from '@/services';
+import { currencyService, categoryService, budgetService } from '@/services';
+import BudgetImpactPreview from '@/components/budgets/budget-impact-preview';
 
 const TransactionForm = ({
   isVisible,
@@ -28,6 +28,8 @@ const TransactionForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currencies, setCurrencies] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [budgetImpact, setBudgetImpact] = useState(null);
+  const [budgetImpactLoading, setBudgetImpactLoading] = useState(false);
 
   useEffect(() => {
     if (isVisible) {
@@ -64,6 +66,42 @@ const TransactionForm = ({
       console.error('Failed to fetch categories:', error);
     }
   };
+
+  const fetchBudgetImpact = useCallback(async () => {
+    // Only fetch if we have all required fields and it's a new transaction (not editing)
+    if (!amount || amount <= 0 || !categoryId || !currencyId || !date || selectedTransaction) {
+      setBudgetImpact(null);
+      return;
+    }
+
+    try {
+      setBudgetImpactLoading(true);
+      const impactData = await budgetService.previewBudgetImpact({
+        amount,
+        categoryId,
+        transactionDate: date.toISOString(),
+        currencyId
+      });
+      setBudgetImpact(impactData);
+    } catch (error) {
+      console.error('Failed to fetch budget impact:', error);
+      setBudgetImpact(null);
+    } finally {
+      setBudgetImpactLoading(false);
+    }
+  }, [amount, categoryId, currencyId, date, selectedTransaction]);
+
+  // Fetch budget impact when relevant fields change
+  useEffect(() => {
+    // Debounce to avoid too many API calls
+    const timeoutId = setTimeout(() => {
+      if (isVisible && amount && categoryId && currencyId && date && !selectedTransaction) {
+        fetchBudgetImpact();
+      }
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [amount, categoryId, currencyId, date, isVisible, selectedTransaction, fetchBudgetImpact]);
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -112,6 +150,8 @@ const TransactionForm = ({
     setNotes('');
     setSelectedTransaction(null);
     setErrors({});
+    setBudgetImpact(null);
+    setBudgetImpactLoading(false);
     setIsVisible(false);
   };
 
@@ -217,6 +257,14 @@ const TransactionForm = ({
           />
           {errors.notes && <small className="p-error">{errors.notes}</small>}
         </div>
+
+        {/* Budget Impact Preview - Only for new transactions */}
+        {!selectedTransaction && (
+          <BudgetImpactPreview
+            impactData={budgetImpact}
+            loading={budgetImpactLoading}
+          />
+        )}
 
         <div className="flex gap-2 pt-3 border-top-1 surface-border">
           <Button 

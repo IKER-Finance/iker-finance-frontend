@@ -37,7 +37,7 @@ const BudgetTable = ({
   const getConfirmationModalMessage = () => {
     return (
       <div>
-        Are you sure you want to delete the budget <b>&quot;{deletedBudgetName}&quot;</b>?
+        Are you sure you want to delete the budget for category <b>&quot;{deletedBudgetName}&quot;</b>?
       </div>
     );
   };
@@ -50,14 +50,13 @@ const BudgetTable = ({
 
   const actionBodyTemplate = (rowData) => {
     return (
-      <Fragment>
+      <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', alignItems: 'center' }}>
         <Button 
           icon="pi pi-pencil" 
           rounded 
           outlined 
           severity="info" 
           onClick={() => handleEditBudget(rowData)} 
-          className="mr-2"
           tooltip="Edit budget"
           tooltipOptions={{ position: 'top' }}
         />
@@ -70,7 +69,7 @@ const BudgetTable = ({
           tooltip="Delete budget"
           tooltipOptions={{ position: 'top' }}
         />
-      </Fragment>
+      </div>
     );
   };
 
@@ -101,7 +100,7 @@ const BudgetTable = ({
         {renderColumn()}
         <Column
           header="Actions"
-          style={{ width: '8rem' }}
+          style={{ width: '10rem' }}
           align="center"
           body={actionBodyTemplate}
           frozen
