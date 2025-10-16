@@ -203,7 +203,7 @@ const FAQContent = () => {
           <i className="pi pi-question-circle text-6xl text-primary"></i>
           <h1 className="text-4xl font-bold m-0">Help & FAQ</h1>
           <p className="text-xl text-color-secondary m-0" style={{ maxWidth: '600px' }}>
-            Find answers to common questions about using IKER Finance. Can't find what you're looking for?{' '}
+            Find answers to common questions about using IKER Finance. Can&apos;t find what you&apos;re looking for?{' '}
             <span
               className="text-primary cursor-pointer"
               onClick={() => router.push(PAGE_ROUTES.feedback)}
@@ -211,7 +211,7 @@ const FAQContent = () => {
             >
               Submit feedback
             </span>{' '}
-            and we'll help you out!
+            and we&apos;ll help you out!
           </p>
         </div>
       </Card>
@@ -347,7 +347,7 @@ const FAQContent = () => {
           <i className="pi pi-comments text-5xl text-primary"></i>
           <h2 className="text-3xl font-bold m-0">Still Need Help?</h2>
           <p className="text-xl text-color-secondary m-0" style={{ maxWidth: '600px' }}>
-            Can't find the answer you're looking for? Our support team is here to help!
+            Can&apos;t find the answer you&apos;re looking for? Our support team is here to help!
           </p>
           <Button
             label="Submit Feedback"
