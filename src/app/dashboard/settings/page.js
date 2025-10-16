@@ -22,6 +22,7 @@ import {
   selectProfileError,
   clearError,
 } from '@/redux/feature/profile-slice';
+import styles from '../OverviewPage.module.css'; 
 
 // Common timezones
 const TIMEZONES = [
@@ -227,7 +228,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="p-4">
+    <div className={styles.pageContainer}>
       <Toast ref={toast} />
 
       <div className="mb-4">
