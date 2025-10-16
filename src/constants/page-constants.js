@@ -22,6 +22,9 @@ const PAGE_ROUTES = {
   reports: '/dashboard/reports',
   profile: '/dashboard/profile',
   settings: '/dashboard/settings',
+
+  faq: '/dashboard/support/faq',
+  feedback: '/dashboard/support/feedback',
 };
 
 export default PAGE_ROUTES;
