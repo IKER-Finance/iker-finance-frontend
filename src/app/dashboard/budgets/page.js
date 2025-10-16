@@ -27,7 +27,6 @@ import {
   selectBudgetTotalCount,
   selectSelectedBudget,
 } from '@/redux/feature/budget-slice';
-import styles from '../OverviewPage.module.css'; 
 
 const BudgetsPage = () => {
   const dispatch = useDispatch();
@@ -216,7 +215,6 @@ const BudgetsPage = () => {
   };
 
   return (
-    <div className={`${styles.pageContainer} surface-ground min-h-screen`}>
     <div className="p-4">
       <Toast ref={toast} />
       
@@ -255,7 +253,6 @@ const BudgetsPage = () => {
         onSubmit={handleSubmitBudget}
         isLoading={loading}
       />
-    </div>
     </div>
   );
 };

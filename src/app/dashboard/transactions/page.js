@@ -33,7 +33,6 @@ import {
 import { selectUser } from '@/redux/feature/auth-slice';
 import { transactionService, categoryService } from '@/services';
 import './styles.scss';
-import styles from '../OverviewPage.module.css'; 
 
 const TransactionsPage = () => {
   const dispatch = useDispatch();
@@ -324,7 +323,6 @@ const TransactionsPage = () => {
   };
 
   return (
-    <div className={`${styles.pageContainer} surface-ground min-h-screen`}>
     <div className="transactions-container">
       <div className="transactions-header">
         <h1>All Transactions</h1>
@@ -365,7 +363,6 @@ const TransactionsPage = () => {
         onSubmit={handleTransactionSubmit}
         isLoading={isLoading}
       />
-    </div>
     </div>
   );
 };

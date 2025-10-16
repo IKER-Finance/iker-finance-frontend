@@ -154,7 +154,7 @@ export default function OverviewPage() {
   };
 
   return (
-    <div className={`${styles.pageContainer} surface-ground min-h-screen`}>
+    <div className="surface-ground min-h-screen">
       <div className="p-4">
         <div className="flex justify-content-between align-items-center mb-4">
           <div>
