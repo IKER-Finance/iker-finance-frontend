@@ -31,6 +31,7 @@ import {
   clearError,
 } from '@/redux/feature/profile-slice';
 import { loginSuccess } from '@/redux/feature/auth-slice';
+import styles from '../OverviewPage.module.css'; 
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
@@ -298,7 +299,8 @@ export default function ProfilePage() {
   );
 
   return (
-    <div className="p-4">
+   <div className={styles.pageContainer}>
+
       <Toast ref={toast} />
 
       <div className="mb-4">
@@ -308,9 +310,9 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 justify-center items-start">
         {/* Profile Information Card */}
-        <Card title="Profile Information" className="shadow-md">
+        <Card title="Profile Information" className="shadow-md mx-auto max-w-md w-full">
           {loading && !profile ? (
             <div className="text-center py-4">
               <i className="pi pi-spin pi-spinner text-4xl text-blue-500"></i>
