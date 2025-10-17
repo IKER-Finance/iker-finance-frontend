@@ -6,6 +6,7 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useRouter } from 'next/navigation';
 import PAGE_ROUTES from '@/constants/page-constants';
+import styles from '../../../OverviewPage.module.css';
 
 const FAQContent = () => {
   const router = useRouter();
@@ -196,9 +197,9 @@ const FAQContent = () => {
   })).filter((category) => category.questions.length > 0);
 
   return (
-    <div className="flex flex-column gap-4">
-      {/* Hero Section */}
-      <Card className="shadow-2">
+    <div className={`${styles.pageContainer} flex flex-column gap-4`}>
+    {/* Hero Section */}
+    <Card className="shadow-2">
         <div className="flex flex-column align-items-center text-center gap-3">
           <i className="pi pi-question-circle text-6xl text-primary"></i>
           <h1 className="text-4xl font-bold m-0">Help & FAQ</h1>
