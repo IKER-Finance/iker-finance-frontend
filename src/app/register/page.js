@@ -82,40 +82,56 @@ export default function RegisterPage() {
   const displayError = error || authError;
 
   return (
-    <div
-      className="flex justify-content-between align-items-center min-h-screen"
-      style={{
-        backgroundImage: "url('https://png.pngtree.com/thumb_back/fh260/background/20250512/pngtree-blue-gradient-soft-background-vector-image_17280771.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        minHeight: '100vh',
-        padding: '0 5rem',
-      }}
-    >
-  
-      <div className="text-white w-6 pr-6">
-        <h1 className="text-6xl font-bold mb-3 drop-shadow-lg">Join IKER Finance</h1>
-        <p className="text-lg opacity-90">
-          Create your account and take control of your financial journey.
-          Get personalized insights, manage your budget, and make smarter financial decisions.
-        </p>
-      </div>
+    <>
+      <style jsx>{`
+        @media (min-width: 768px) {
+          .register-container {
+            padding: 2rem !important;
+          }
+        }
+        @media (min-width: 1024px) {
+          .register-container {
+            padding: 5rem !important;
+          }
+        }
+      `}</style>
 
- 
-      <div className="w-6 flex justify-content-center">
-        <Card
-          title="Register for IKER Finance"
-          className="shadow-6"
-          style={{
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(8px)',
-            borderRadius: '1rem',
-            width: '100%',
-            maxWidth: '400px',
-            padding: '1.5rem',
-          }}
-        >
+      <div
+        className="register-container flex flex-column md:flex-row justify-content-between align-items-center min-h-screen"
+        style={{
+          backgroundImage: "url('https://png.pngtree.com/thumb_back/fh260/background/20250512/pngtree-blue-gradient-soft-background-vector-image_17280771.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '100vh',
+          padding: '1rem',
+        }}
+      >
+
+        <div className="text-white w-full md:w-6 mb-4 md:mb-0 md:pr-6 text-center md:text-left">
+          <h1 className="text-4xl md:text-6xl font-bold mb-3 drop-shadow-lg">Join IKER Finance</h1>
+          <p className="text-base md:text-lg opacity-90">
+            Take control of your money across multiple currencies. Whether you&apos;re studying abroad, traveling internationally, or managing finances in different countries, IKER Finance helps you track expenses, set smart budgets, and understand your spending habits while automatically converting everything to your home currency.
+          </p>
+          <p className="text-base md:text-lg opacity-90 mt-3">
+            Create your free account in seconds and start managing your finances with confidence.
+          </p>
+        </div>
+
+
+        <div className="w-full md:w-6 flex justify-content-center">
+          <Card
+            title="Register for IKER Finance"
+            className="shadow-6"
+            style={{
+              background: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(8px)',
+              borderRadius: '1rem',
+              width: '100%',
+              maxWidth: '400px',
+              padding: '1.5rem',
+            }}
+          >
           {displayError && <Message severity="error" text={displayError} className="mb-3" />}
 
           <form onSubmit={handleSubmit} className="p-fluid">
@@ -215,5 +231,6 @@ export default function RegisterPage() {
         </Card>
       </div>
     </div>
+    </>
   );
 }
