@@ -9,16 +9,29 @@ export default function BudgetProgressBar({
   height = '1.5rem',
   className = ''
 }) {
-  // Determine color based on status
+  // Determine color based on status using CSS variables
   const getColor = () => {
     switch (status) {
       case 'OverBudget':
-        return '#EF4444'; // Red
+        return 'var(--color-error)';
       case 'Warning':
-        return '#F59E0B'; // Orange
+        return 'var(--color-warning)';
       case 'OnTrack':
       default:
-        return '#10B981'; // Green
+        return 'var(--color-success)';
+    }
+  };
+
+  // Determine CSS class for text color
+  const getColorClass = () => {
+    switch (status) {
+      case 'OverBudget':
+        return 'budget-card-value-error';
+      case 'Warning':
+        return 'budget-card-value-warning';
+      case 'OnTrack':
+      default:
+        return 'budget-card-value-success';
     }
   };
 
@@ -32,21 +45,18 @@ export default function BudgetProgressBar({
         value={displayPercentage}
         style={{
           height: height,
-          backgroundColor: '#E5E7EB',
+          backgroundColor: 'var(--color-gray-200)',
         }}
         color={getColor()}
         showValue={false}
       />
       {showPercentage && (
         <div className="flex justify-content-between align-items-center">
-          <span
-            className="text-sm font-semibold"
-            style={{ color: getColor() }}
-          >
+          <span className={`text-sm font-semibold ${getColorClass()}`}>
             {actualPercentage}% spent
           </span>
           {percentageSpent > 100 && (
-            <span className="text-xs text-red-500 font-semibold">
+            <span className="text-xs font-semibold budget-card-value-error">
               Over by {(actualPercentage - 100).toFixed(1)}%
             </span>
           )}

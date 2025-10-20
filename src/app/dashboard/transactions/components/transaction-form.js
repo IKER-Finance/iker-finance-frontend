@@ -157,11 +157,19 @@ const TransactionForm = ({
   };
 
   const headerText = selectedTransaction ? 'Edit Transaction' : 'Add New Transaction';
+  const headerIcon = selectedTransaction ? 'pi pi-pencil' : 'pi pi-plus-circle';
   const actionButtonLabel = selectedTransaction ? 'Update' : 'Add';
+
+  const customHeader = (
+    <div className="flex align-items-center gap-3">
+      <i className={headerIcon} style={{ fontSize: '1.75rem' }}></i>
+      <h2 className="m-0 text-2xl font-bold">{headerText}</h2>
+    </div>
+  );
 
   return (
     <Sidebar
-      header={headerText}
+      header={customHeader}
       className="w-full md:w-30rem"
       visible={isVisible}
       position="right"

@@ -230,7 +230,7 @@ const FAQContent = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Type keywords to search questions and answers..."
-              className="w-full"
+              className="w-full pl-5"
             />
           </span>
           {searchTerm && (

@@ -19,11 +19,8 @@
   h1 {
     font-size: 1.75rem;
     font-weight: 700;
-    color: #1f2937;
+    color: var(--text-primary);
     margin: 0;
-    background: linear-gradient(90deg, #3b82f6, #06b6d4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
   }
 
   .p-button {
@@ -80,13 +77,32 @@
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
       }
     }
+
+    .p-dropdown {
+      .p-dropdown-trigger {
+        border-radius: 0 12px 12px 0;
+      }
+    }
   }
 
   .filter-actions {
     display: flex;
-    align-items: end;
+    flex-direction: column;
     gap: 0.5rem;
     min-width: fit-content;
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+
+    .buttons-wrapper {
+      display: flex;
+      gap: 0.5rem;
+    }
 
     .p-button {
       border-radius: 12px;
