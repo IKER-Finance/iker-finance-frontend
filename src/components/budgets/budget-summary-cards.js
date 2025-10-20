@@ -18,7 +18,7 @@ export default function BudgetSummaryCards({
     }).format(amount);
   };
 
-  const renderCard = (title, value, icon, color, subtext = null) => {
+  const renderCard = (title, value, icon, colorClass, subtext = null) => {
     return (
       <Card className="text-center">
         {loading ? (
@@ -29,9 +29,9 @@ export default function BudgetSummaryCards({
           </>
         ) : (
           <>
-            <i className={`${icon} text-4xl mb-3`} style={{ color }} />
+            <i className={`${icon} text-4xl mb-3 budget-card-icon-${colorClass}`} />
             <h3 className="text-xl font-semibold mb-2">{title}</h3>
-            <p className="text-2xl font-bold mb-1" style={{ color }}>
+            <p className={`text-2xl font-bold mb-1 budget-card-value-${colorClass}`}>
               {typeof value === 'number' ? formatCurrency(value) : value}
             </p>
             {subtext && (
@@ -59,7 +59,7 @@ export default function BudgetSummaryCards({
           'Total Budgeted',
           totalBudgeted,
           'pi pi-wallet',
-          '#3B82F6',
+          'primary',
           `${budgetData.totalBudgets || 0} active ${budgetData.totalBudgets === 1 ? 'budget' : 'budgets'}`
         )}
       </div>
@@ -69,7 +69,7 @@ export default function BudgetSummaryCards({
           'Total Spent',
           totalSpent,
           'pi pi-arrow-down',
-          '#EF4444',
+          'error',
           `${percentageSpent.toFixed(1)}% of budget used`
         )}
       </div>
@@ -79,7 +79,7 @@ export default function BudgetSummaryCards({
           'Remaining',
           remaining,
           remaining >= 0 ? 'pi pi-check-circle' : 'pi pi-exclamation-triangle',
-          remaining >= 0 ? '#10B981' : '#EF4444',
+          remaining >= 0 ? 'success' : 'error',
           remaining >= 0 ? 'Available to spend' : 'Over budget'
         )}
       </div>
@@ -89,7 +89,7 @@ export default function BudgetSummaryCards({
           'Budgets at Risk',
           budgetData.budgetsWarning + budgetData.budgetsOverBudget,
           'pi pi-exclamation-circle',
-          (budgetData.budgetsWarning + budgetData.budgetsOverBudget) > 0 ? '#F59E0B' : '#10B981',
+          (budgetData.budgetsWarning + budgetData.budgetsOverBudget) > 0 ? 'warning' : 'success',
           `${budgetData.budgetsOverBudget || 0} over, ${budgetData.budgetsWarning || 0} warning`
         )}
       </div>
