@@ -12,6 +12,7 @@ import PAGE_ROUTES from '../../../constants/page-constants';
 import BudgetSummaryCards from '../../../components/budgets/budget-summary-cards';
 import ActiveBudgetsList from '../../../components/budgets/active-budgets-list';
 import BudgetAlerts from '../../../components/budgets/budget-alerts';
+import styles from '../OverviewPage.module.css'; 
 
 export default function OverviewPage() {
   const user = useSelector(selectUser);
@@ -154,7 +155,7 @@ export default function OverviewPage() {
   };
 
   return (
-    <div className="surface-ground min-h-screen">
+    <div className={`${styles.pageContainer} surface-ground min-h-screen`}>
       <div className="p-4">
         <div className="flex justify-content-between align-items-center mb-4">
           <div>

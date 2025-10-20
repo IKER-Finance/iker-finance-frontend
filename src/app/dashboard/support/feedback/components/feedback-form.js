@@ -21,6 +21,8 @@ import {
   FEEDBACK_PRIORITY_ENUM,
   FEEDBACK_TYPE_ENUM,
 } from '@/constants/feedback-constants';
+import styles from '../../../OverviewPage.module.css';
+
 
 const FeedbackForm = () => {
   const dispatch = useDispatch();
@@ -110,7 +112,7 @@ const FeedbackForm = () => {
   };
 
   return (
-    <>
+    <div className={styles.pageContainer}>
       <Toast ref={toast} />
       <Card
         title="Submit Feedback"
@@ -243,7 +245,7 @@ const FeedbackForm = () => {
           </div>
         </div>
       </Card>
-    </>
+    </div>
   );
 };
 
