@@ -12,7 +12,7 @@ import PAGE_ROUTES from '../../../constants/page-constants';
 import BudgetSummaryCards from '../../../components/budgets/budget-summary-cards';
 import ActiveBudgetsList from '../../../components/budgets/active-budgets-list';
 import BudgetAlerts from '../../../components/budgets/budget-alerts';
-import styles from '../OverviewPage.module.css'; 
+import styles from '../overview-page.module.css'; 
 
 export default function OverviewPage() {
   const user = useSelector(selectUser);
@@ -71,22 +71,18 @@ export default function OverviewPage() {
           startDate: firstDayOfMonth.toISOString().split('T')[0],
           endDate: lastDayOfMonth.toISOString().split('T')[0]
         }).catch(err => {
-          console.error('Current month summary error:', err);
           return null;
         }),
         transactionService.getTransactionSummary({
           startDate: firstDayOfLastMonth.toISOString().split('T')[0],
           endDate: lastDayOfLastMonth.toISOString().split('T')[0]
         }).catch(err => {
-          console.error('Last month summary error:', err);
           return null;
         }),
         transactionService.getTransactions({ pageSize: 5, pageNumber: 1 }).catch(err => {
-          console.error('Transactions error:', err);
           return { data: [] };
         }),
         budgetService.getBudgets({ status: 'Active' }).catch(err => {
-          console.error('Budgets error:', err);
           return { totalCount: 0 };
         })
       ]);
@@ -120,7 +116,6 @@ export default function OverviewPage() {
 
       setLoading(false);
     } catch (error) {
-      console.error('Failed to fetch dashboard data:', error);
       setLoading(false);
     }
   };
@@ -132,7 +127,6 @@ export default function OverviewPage() {
       setActiveBudgetsData(budgetsData);
       setBudgetLoading(false);
     } catch (error) {
-      console.error('Failed to fetch active budgets:', error);
       setBudgetLoading(false);
     }
   };

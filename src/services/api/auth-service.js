@@ -1,5 +1,5 @@
 import apiClient from '../api-client';
-import { tokenService } from '../token';
+import { tokenService } from '../../utils/token';
 import store from '../../redux/store';
 import { 
   loginStart, 

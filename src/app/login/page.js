@@ -1,6 +1,6 @@
 'use client';
 
-import Preloader from '../../components/Preloader';
+import Preloader from '../../components/preloader';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';

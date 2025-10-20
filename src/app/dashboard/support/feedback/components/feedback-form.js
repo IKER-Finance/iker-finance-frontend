@@ -21,7 +21,7 @@ import {
   FEEDBACK_PRIORITY_ENUM,
   FEEDBACK_TYPE_ENUM,
 } from '@/constants/feedback-constants';
-import styles from '../../../OverviewPage.module.css';
+import styles from '../../../overview-page.module.css';
 
 
 const FeedbackForm = () => {

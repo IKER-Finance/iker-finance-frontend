@@ -27,7 +27,7 @@ import {
   selectBudgetTotalCount,
   selectSelectedBudget,
 } from '@/redux/feature/budget-slice';
-import styles from '../OverviewPage.module.css'; 
+import styles from '../overview-page.module.css'; 
 
 const BudgetsPage = () => {
   const dispatch = useDispatch();
@@ -72,7 +72,6 @@ const BudgetsPage = () => {
             const summary = await budgetService.getBudgetSummary(budget.id);
             return { ...budget, summary };
           } catch (error) {
-            console.error(`Failed to fetch summary for budget ${budget.id}:`, error);
             return budget; // Return budget without summary on error
           }
         })
