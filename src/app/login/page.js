@@ -1,6 +1,7 @@
 'use client';
 
 import Preloader from '../../components/preloader';
+import Logo from '../../components/common/logo';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
@@ -72,7 +73,9 @@ export default function LoginPage() {
         }}
       >
         <div className="text-white w-full md:w-6 mb-4 md:mb-0 md:pr-6 text-center md:text-left">
-          <h1 className="text-4xl md:text-6xl font-bold mb-3 drop-shadow-lg">IKER Finance</h1>
+          <div className="mb-3" style={{ filter: 'brightness(0) invert(1)' }}>
+            <Logo size="hero" />
+          </div>
           <p className="text-base md:text-lg opacity-90">
             Manage your finances across borders with confidence. Access your multi-currency expense tracker to view your spending patterns, check your budgets, and stay on top of your financial goals, all in your preferred currency.
           </p>

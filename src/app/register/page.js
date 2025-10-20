@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
+import Preloader from '../../components/preloader';
+import Logo from '../../components/common/logo';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
@@ -26,10 +28,16 @@ export default function RegisterPage() {
   const [currencies, setCurrencies] = useState([]);
   const [error, setError] = useState('');
   const [loadingCurrencies, setLoadingCurrencies] = useState(true);
+  const [showPreloader, setShowPreloader] = useState(true);
   const router = useRouter();
 
   const loading = useSelector(selectAuthLoading);
   const authError = useSelector(selectAuthError);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowPreloader(false), 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const fetchCurrencies = async () => {
@@ -83,6 +91,8 @@ export default function RegisterPage() {
 
   return (
     <>
+      <Preloader visible={showPreloader} />
+
       <style jsx>{`
         @media (min-width: 768px) {
           .register-container {
@@ -109,7 +119,9 @@ export default function RegisterPage() {
       >
 
         <div className="text-white w-full md:w-6 mb-4 md:mb-0 md:pr-6 text-center md:text-left">
-          <h1 className="text-4xl md:text-6xl font-bold mb-3 drop-shadow-lg">Join IKER Finance</h1>
+          <div className="mb-3" style={{ filter: 'brightness(0) invert(1)' }}>
+            <Logo size="hero" />
+          </div>
           <p className="text-base md:text-lg opacity-90">
             Take control of your money across multiple currencies. Whether you&apos;re studying abroad, traveling internationally, or managing finances in different countries, IKER Finance helps you track expenses, set smart budgets, and understand your spending habits while automatically converting everything to your home currency.
           </p>
