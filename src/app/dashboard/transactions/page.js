@@ -33,7 +33,7 @@ import {
 import { selectUser } from '@/redux/feature/auth-slice';
 import { transactionService, categoryService } from '@/services';
 import './styles.scss';
-import styles from '../OverviewPage.module.css'; 
+import styles from '../overview-page.module.css'; 
 
 const TransactionsPage = () => {
   const dispatch = useDispatch();
@@ -71,7 +71,6 @@ const TransactionsPage = () => {
       const response = await categoryService.getCategories();
       setCategories(response);
     } catch (error) {
-      console.error('Failed to fetch categories:', error);
     }
   };
 

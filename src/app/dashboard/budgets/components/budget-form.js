@@ -57,7 +57,6 @@ const BudgetForm = ({
       const response = await currencyService.getActiveCurrencies();
       setCurrencies(response);
     } catch (error) {
-      console.error('Failed to fetch currencies:', error);
     }
   };
 
@@ -66,7 +65,6 @@ const BudgetForm = ({
       const response = await categoryService.getCategories();
       setCategories(response);
     } catch (error) {
-      console.error('Failed to fetch categories:', error);
     }
   };
 

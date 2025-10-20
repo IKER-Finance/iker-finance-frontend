@@ -24,7 +24,7 @@ const RequireAuth = ({ children }) => {
       try {
         authService.initializeAuth();
       } catch (error) {
-        console.error('Auth initialization failed:', error);
+        setIsInitialized(true);
       } finally {
         setIsInitialized(true);
       }

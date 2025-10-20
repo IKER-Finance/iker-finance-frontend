@@ -22,7 +22,7 @@ import {
   selectProfileError,
   clearError,
 } from '@/redux/feature/profile-slice';
-import styles from '../OverviewPage.module.css'; 
+import styles from '../overview-page.module.css'; 
 
 // Common timezones
 const TIMEZONES = [
@@ -143,7 +143,6 @@ export default function SettingsPage() {
       const currency = data.find((c) => c.id === homeCurrencyId);
       setHomeCurrency(currency);
     } catch (err) {
-      console.error('Failed to load home currency:', err);
     }
   };
 

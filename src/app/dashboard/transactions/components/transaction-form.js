@@ -54,7 +54,6 @@ const TransactionForm = ({
       const response = await currencyService.getActiveCurrencies();
       setCurrencies(response);
     } catch (error) {
-      console.error('Failed to fetch currencies:', error);
     }
   };
 
@@ -63,7 +62,6 @@ const TransactionForm = ({
       const response = await categoryService.getCategories();
       setCategories(response);
     } catch (error) {
-      console.error('Failed to fetch categories:', error);
     }
   };
 
@@ -84,7 +82,6 @@ const TransactionForm = ({
       });
       setBudgetImpact(impactData);
     } catch (error) {
-      console.error('Failed to fetch budget impact:', error);
       setBudgetImpact(null);
     } finally {
       setBudgetImpactLoading(false);

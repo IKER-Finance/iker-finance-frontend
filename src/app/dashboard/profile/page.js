@@ -10,7 +10,7 @@ import { Password } from 'primereact/password';
 import { Divider } from 'primereact/divider';
 import { Message } from 'primereact/message';
 import { userService } from '@/services/api/user-service';
-import { tokenService } from '@/services/token';
+import { tokenService } from '@/utils/token';
 import {
   getProfileStart,
   getProfileSuccess,
@@ -31,7 +31,7 @@ import {
   clearError,
 } from '@/redux/feature/profile-slice';
 import { loginSuccess } from '@/redux/feature/auth-slice';
-import styles from '../OverviewPage.module.css'; 
+import styles from '../overview-page.module.css'; 
 
 export default function ProfilePage() {
   const dispatch = useDispatch();

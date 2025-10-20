@@ -6,7 +6,7 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useRouter } from 'next/navigation';
 import PAGE_ROUTES from '@/constants/page-constants';
-import styles from '../../../OverviewPage.module.css';
+import styles from '../../../overview-page.module.css';
 
 const FAQContent = () => {
   const router = useRouter();
