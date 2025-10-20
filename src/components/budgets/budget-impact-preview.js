@@ -93,11 +93,11 @@ export default function BudgetImpactPreview({ impactData, loading = false }) {
                 <div className="text-xs text-500 mb-1">After Transaction</div>
                 <div className="text-sm">
                   <div
-                    className="font-semibold"
-                    style={{
-                      color: budget.statusAfter === 'OverBudget' ? '#EF4444' :
-                             budget.statusAfter === 'Warning' ? '#F59E0B' : '#10B981'
-                    }}
+                    className={`font-semibold ${
+                      budget.statusAfter === 'OverBudget' ? 'budget-card-value-error' :
+                      budget.statusAfter === 'Warning' ? 'budget-card-value-warning' :
+                      'budget-card-value-success'
+                    }`}
                   >
                     {formatCurrency(budget.afterSpent, budget.currencyCode, budget.currencySymbol)}
                   </div>
@@ -114,10 +114,9 @@ export default function BudgetImpactPreview({ impactData, loading = false }) {
             <div className="flex justify-content-between align-items-center">
               <span className="text-sm text-600">Remaining:</span>
               <span
-                className="text-sm font-semibold"
-                style={{
-                  color: budget.afterRemaining >= 0 ? '#10B981' : '#EF4444'
-                }}
+                className={`text-sm font-semibold ${
+                  budget.afterRemaining >= 0 ? 'budget-card-value-success' : 'budget-card-value-error'
+                }`}
               >
                 {formatCurrency(budget.afterRemaining, budget.currencyCode, budget.currencySymbol)}
               </span>
@@ -140,7 +139,7 @@ export default function BudgetImpactPreview({ impactData, loading = false }) {
                   <div className="flex justify-content-between text-xs">
                     <span className="text-600">After spending:</span>
                     <span
-                      className={budget.affectedCategory.willExceed ? 'text-red-500 font-semibold' : ''}
+                      className={budget.affectedCategory.willExceed ? 'budget-card-value-error font-semibold' : ''}
                     >
                       {formatCurrency(budget.affectedCategory.afterSpent, budget.currencyCode, budget.currencySymbol)}
                       {budget.affectedCategory.willExceed && ' ⚠️'}
@@ -148,8 +147,8 @@ export default function BudgetImpactPreview({ impactData, loading = false }) {
                   </div>
                   {budget.affectedCategory.willExceed && (
                     <div className="flex justify-content-between text-xs mt-1">
-                      <span className="text-red-500 font-semibold">Exceeds by:</span>
-                      <span className="text-red-500 font-semibold">
+                      <span className="budget-card-value-error font-semibold">Exceeds by:</span>
+                      <span className="budget-card-value-error font-semibold">
                         {formatCurrency(budget.affectedCategory.exceedAmount, budget.currencyCode, budget.currencySymbol)}
                       </span>
                     </div>
