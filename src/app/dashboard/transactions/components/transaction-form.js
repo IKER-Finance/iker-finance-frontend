@@ -7,7 +7,6 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
 import { transactionValidationSchema } from '../validation';
-import { TRANSACTION_TYPE_OPTIONS, TRANSACTION_TYPE_ENUM } from '@/constants/transaction-constants';
 import { currencyService, categoryService, budgetService } from '@/services';
 import BudgetImpactPreview from '@/components/budgets/budget-impact-preview';
 
@@ -55,7 +54,6 @@ const TransactionForm = ({
       const response = await currencyService.getActiveCurrencies();
       setCurrencies(response);
     } catch (error) {
-      console.error('Failed to fetch currencies:', error);
     }
   };
 
@@ -64,7 +62,6 @@ const TransactionForm = ({
       const response = await categoryService.getCategories();
       setCategories(response);
     } catch (error) {
-      console.error('Failed to fetch categories:', error);
     }
   };
 
@@ -85,7 +82,6 @@ const TransactionForm = ({
       });
       setBudgetImpact(impactData);
     } catch (error) {
-      console.error('Failed to fetch budget impact:', error);
       setBudgetImpact(null);
     } finally {
       setBudgetImpactLoading(false);
@@ -161,11 +157,19 @@ const TransactionForm = ({
   };
 
   const headerText = selectedTransaction ? 'Edit Transaction' : 'Add New Transaction';
+  const headerIcon = selectedTransaction ? 'pi pi-pencil' : 'pi pi-plus-circle';
   const actionButtonLabel = selectedTransaction ? 'Update' : 'Add';
+
+  const customHeader = (
+    <div className="flex align-items-center gap-3">
+      <i className={headerIcon} style={{ fontSize: '1.75rem' }}></i>
+      <h2 className="m-0 text-2xl font-bold">{headerText}</h2>
+    </div>
+  );
 
   return (
     <Sidebar
-      header={headerText}
+      header={customHeader}
       className="w-full md:w-30rem"
       visible={isVisible}
       position="right"

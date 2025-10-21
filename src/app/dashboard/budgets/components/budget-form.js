@@ -57,7 +57,6 @@ const BudgetForm = ({
       const response = await currencyService.getActiveCurrencies();
       setCurrencies(response);
     } catch (error) {
-      console.error('Failed to fetch currencies:', error);
     }
   };
 
@@ -66,7 +65,6 @@ const BudgetForm = ({
       const response = await categoryService.getCategories();
       setCategories(response);
     } catch (error) {
-      console.error('Failed to fetch categories:', error);
     }
   };
 
@@ -152,7 +150,15 @@ const BudgetForm = ({
   };
 
   const headerText = selectedBudget ? 'Edit Budget' : 'Create Budget';
+  const headerIcon = selectedBudget ? 'pi pi-pencil' : 'pi pi-plus-circle';
   const actionButtonLabel = selectedBudget ? 'Update' : 'Create';
+
+  const customHeader = (
+    <div className="flex align-items-center gap-3">
+      <i className={headerIcon} style={{ fontSize: '1.75rem' }}></i>
+      <h2 className="m-0 text-2xl font-bold">{headerText}</h2>
+    </div>
+  );
 
   return (
     <>
@@ -169,7 +175,7 @@ const BudgetForm = ({
         acceptClassName="p-button-warning"
       />
       <Sidebar
-        header={headerText}
+        header={customHeader}
         className="w-full md:w-30rem lg:w-35rem"
         visible={isVisible}
         position="right"

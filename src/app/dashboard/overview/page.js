@@ -12,6 +12,7 @@ import PAGE_ROUTES from '../../../constants/page-constants';
 import BudgetSummaryCards from '../../../components/budgets/budget-summary-cards';
 import ActiveBudgetsList from '../../../components/budgets/active-budgets-list';
 import BudgetAlerts from '../../../components/budgets/budget-alerts';
+import styles from '../overview-page.module.css'; 
 
 export default function OverviewPage() {
   const user = useSelector(selectUser);
@@ -42,7 +43,7 @@ export default function OverviewPage() {
   useEffect(() => {
     if (activeBudgetsData && activeBudgetsData.budgets) {
       const onTrack = activeBudgetsData.budgets.filter(
-        budget => budget.utilizationPercentage < 80
+        budget => budget.status === 'OnTrack' || budget.percentageSpent < 80
       ).length;
 
       setDashboardData(prev => ({
@@ -70,22 +71,18 @@ export default function OverviewPage() {
           startDate: firstDayOfMonth.toISOString().split('T')[0],
           endDate: lastDayOfMonth.toISOString().split('T')[0]
         }).catch(err => {
-          console.error('Current month summary error:', err);
           return null;
         }),
         transactionService.getTransactionSummary({
           startDate: firstDayOfLastMonth.toISOString().split('T')[0],
           endDate: lastDayOfLastMonth.toISOString().split('T')[0]
         }).catch(err => {
-          console.error('Last month summary error:', err);
           return null;
         }),
         transactionService.getTransactions({ pageSize: 5, pageNumber: 1 }).catch(err => {
-          console.error('Transactions error:', err);
           return { data: [] };
         }),
         budgetService.getBudgets({ status: 'Active' }).catch(err => {
-          console.error('Budgets error:', err);
           return { totalCount: 0 };
         })
       ]);
@@ -119,7 +116,6 @@ export default function OverviewPage() {
 
       setLoading(false);
     } catch (error) {
-      console.error('Failed to fetch dashboard data:', error);
       setLoading(false);
     }
   };
@@ -131,7 +127,6 @@ export default function OverviewPage() {
       setActiveBudgetsData(budgetsData);
       setBudgetLoading(false);
     } catch (error) {
-      console.error('Failed to fetch active budgets:', error);
       setBudgetLoading(false);
     }
   };
@@ -154,7 +149,7 @@ export default function OverviewPage() {
   };
 
   return (
-    <div className="surface-ground min-h-screen">
+    <div className={`${styles.pageContainer} surface-ground min-h-screen`}>
       <div className="p-4">
         <div className="flex justify-content-between align-items-center mb-4">
           <div>
@@ -338,11 +333,11 @@ export default function OverviewPage() {
                 <div className="text-center py-4">
                   <i className="pi pi-info-circle text-4xl text-400 mb-3"></i>
                   <p className="text-600 text-lg">No transactions yet.</p>
-                  <Button 
-                    label="Add Your First Transaction" 
-                    icon="pi pi-plus" 
+                  <Button
+                    label="Add Your First Transaction"
+                    icon="pi pi-plus"
                     className="mt-3"
-                    onClick={() => router.push(PAGE_ROUTES.addTransaction)}
+                    onClick={() => router.push(`${PAGE_ROUTES.transactions}?add=true`)}
                   />
                 </div>
               ) : (
@@ -368,12 +363,11 @@ export default function OverviewPage() {
                           {formatDate(transaction.date)} • {transaction.categoryName || 'Uncategorized'}
                         </p>
                       </div>
-                      <div style={{ 
+                      <div style={{
                         fontWeight: 700,
-                        color: transaction.type === 'Income' ? '#10B981' : '#EF4444'
+                        color: '#EF4444'
                       }}>
-                        {transaction.type === 'Income' ? '+' : '-'}
-                        {formatCurrency(transaction.amount)}
+                        -{formatCurrency(transaction.amount)}
                       </div>
                     </div>
                   ))}

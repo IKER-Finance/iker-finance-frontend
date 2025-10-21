@@ -1,7 +1,13 @@
 'use client';
 
-import UnderConstruction from '../../../../components/common/under-construction';
+import FAQContent from './components/faq-content';
 
 export default function FAQPage() {
-  return <UnderConstruction pageName="Help & FAQ" />;
+  return (
+    <div className="grid">
+      <div className="col-12">
+        <FAQContent />
+      </div>
+    </div>
+  );
 }

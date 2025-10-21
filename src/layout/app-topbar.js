@@ -7,8 +7,9 @@ import { useRouter } from 'next/navigation';
 import { Menu } from 'primereact/menu';
 import { LayoutContext } from './context/layout-context';
 import { selectUser } from '../redux/feature/auth-slice';
-import { authService } from '../services/api-service/auth-service';
+import { authService } from '../services';
 import PAGE_ROUTES from '../constants/page-constants';
+import Logo from '../components/common/logo';
 
 const AppTopbar = forwardRef((props, ref) => {
   const menubuttonRef = useRef(null);
@@ -58,9 +59,8 @@ const AppTopbar = forwardRef((props, ref) => {
   return (
     <div className="layout-topbar">
       <Link href={PAGE_ROUTES.overview} className="layout-topbar-logo">
-        <span>IKER Finance</span>
+        <Logo size="small" />
       </Link>
-
       <button
         ref={menubuttonRef}
         type="button"
