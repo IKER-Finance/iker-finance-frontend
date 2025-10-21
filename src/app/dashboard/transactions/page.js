@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'next/navigation';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
@@ -37,6 +38,7 @@ import styles from '../overview-page.module.css';
 
 const TransactionsPage = () => {
   const dispatch = useDispatch();
+  const searchParams = useSearchParams();
   const transactions = useSelector(selectTransactions);
   const isLoading = useSelector(selectTransactionLoading);
   const totalCount = useSelector(selectTransactionTotalCount);
@@ -65,6 +67,14 @@ const TransactionsPage = () => {
     fetchTransactionsData();
     fetchSummaryData();
   }, [currentPage, pageSize, sortBy, sortOrder, searchTerm, categoryFilter]);
+
+  // Handle the 'add' query parameter to open the add transaction sidebar
+  useEffect(() => {
+    const shouldAddTransaction = searchParams.get('add');
+    if (shouldAddTransaction === 'true') {
+      handleAddTransaction();
+    }
+  }, [searchParams]);
 
   const fetchCategories = async () => {
     try {

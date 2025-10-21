@@ -333,11 +333,11 @@ export default function OverviewPage() {
                 <div className="text-center py-4">
                   <i className="pi pi-info-circle text-4xl text-400 mb-3"></i>
                   <p className="text-600 text-lg">No transactions yet.</p>
-                  <Button 
-                    label="Add Your First Transaction" 
-                    icon="pi pi-plus" 
+                  <Button
+                    label="Add Your First Transaction"
+                    icon="pi pi-plus"
                     className="mt-3"
-                    onClick={() => router.push(PAGE_ROUTES.addTransaction)}
+                    onClick={() => router.push(`${PAGE_ROUTES.transactions}?add=true`)}
                   />
                 </div>
               ) : (
