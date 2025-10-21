@@ -1,14 +1,21 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
+import Preloader from '../components/preloader';
 import { selectIsAuthenticated } from '../redux/feature/auth-slice';
 import PAGE_ROUTES from '../constants/page-constants';
 
 export default function HomePage() {
   const router = useRouter();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const [showPreloader, setShowPreloader] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowPreloader(false), 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -18,12 +25,5 @@ export default function HomePage() {
     }
   }, [isAuthenticated, router]);
 
-  return (
-    <div className="flex align-items-center justify-content-center min-h-screen">
-      <div className="text-center">
-        <i className="pi pi-spin pi-spinner text-4xl text-primary"></i>
-        <p className="text-lg text-600 mt-3">Loading...</p>
-      </div>
-    </div>
-  );
+  return <Preloader visible={showPreloader} />;
 }

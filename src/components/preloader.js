@@ -3,13 +3,13 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-
+import Logo from './common/logo';
 
 export default function Preloader({ visible }) {
-  
+
   if (typeof document === 'undefined') return null;
 
-  
+
   return createPortal(
     <AnimatePresence>
       {visible && (
@@ -40,20 +40,11 @@ export default function Preloader({ visible }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -30, scale: 0.96 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            style={{ padding: '0 1rem' }}
+            style={{ padding: '0 1rem', display: 'flex', justifyContent: 'center' }}
           >
-            <h1 style={{
-              margin: 0,
-              fontSize: '4rem',
-              fontWeight: 800,
-              letterSpacing: '-0.02em',
-              textShadow: '0 6px 18px rgba(0,0,0,0.25)'
-            }}>
-              IKER Finance
-            </h1>
-
-            <p style={{ marginTop: '0.5rem', fontSize: '1.125rem', opacity: 0.95 }}>
-            </p>
+            <div style={{ filter: 'brightness(0) invert(1)' }}>
+              <Logo size="hero" />
+            </div>
           </motion.div>
         </motion.div>
       )}
