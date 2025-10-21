@@ -18,7 +18,7 @@ export default function BudgetSummaryCards({
     }).format(amount);
   };
 
-  const renderCard = (title, value, icon, colorClass, subtext = null) => {
+  const renderCard = (title, value, icon, colorClass, subtext = null, isCount = false) => {
     return (
       <Card className="text-center">
         {loading ? (
@@ -32,7 +32,7 @@ export default function BudgetSummaryCards({
             <i className={`${icon} text-4xl mb-3 budget-card-icon-${colorClass}`} />
             <h3 className="text-xl font-semibold mb-2">{title}</h3>
             <p className={`text-2xl font-bold mb-1 budget-card-value-${colorClass}`}>
-              {typeof value === 'number' ? formatCurrency(value) : value}
+              {isCount ? value : (typeof value === 'number' ? formatCurrency(value) : value)}
             </p>
             {subtext && (
               <p className="text-sm text-600 mt-2">{subtext}</p>
@@ -90,7 +90,8 @@ export default function BudgetSummaryCards({
           budgetData.budgetsWarning + budgetData.budgetsOverBudget,
           'pi pi-exclamation-circle',
           (budgetData.budgetsWarning + budgetData.budgetsOverBudget) > 0 ? 'warning' : 'success',
-          `${budgetData.budgetsOverBudget || 0} over, ${budgetData.budgetsWarning || 0} warning`
+          `${budgetData.budgetsOverBudget || 0} over, ${budgetData.budgetsWarning || 0} warning`,
+          true
         )}
       </div>
     </div>
