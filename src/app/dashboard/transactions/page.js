@@ -33,6 +33,7 @@ import {
 import { selectUser } from '@/redux/feature/auth-slice';
 import { transactionService, categoryService } from '@/services';
 import './styles.scss';
+import styles from '../overview-page.module.css'; 
 
 const TransactionsPage = () => {
   const dispatch = useDispatch();
@@ -70,7 +71,6 @@ const TransactionsPage = () => {
       const response = await categoryService.getCategories();
       setCategories(response);
     } catch (error) {
-      console.error('Failed to fetch categories:', error);
     }
   };
 
@@ -304,25 +304,29 @@ const TransactionsPage = () => {
         </div>
         {/* TODO: Add date range filter in future - currently experiencing issues with Calendar range selection */}
         <div className="filter-actions">
-          <Button
-            label="Search"
-            icon="pi pi-search"
-            onClick={handleSearch}
-            size="small"
-          />
-          <Button
-            label="Clear"
-            icon="pi pi-times"
-            onClick={handleClearFilters}
-            size="small"
-            severity="secondary"
-          />
+          <label>Actions</label>
+          <div className="buttons-wrapper">
+            <Button
+              label="Search"
+              icon="pi pi-search"
+              onClick={handleSearch}
+              size="small"
+            />
+            <Button
+              label="Clear"
+              icon="pi pi-times"
+              onClick={handleClearFilters}
+              size="small"
+              severity="secondary"
+            />
+          </div>
         </div>
       </div>
     );
   };
 
   return (
+    <div className={`${styles.pageContainer} surface-ground min-h-screen`}>
     <div className="transactions-container">
       <div className="transactions-header">
         <h1>All Transactions</h1>
@@ -363,6 +367,7 @@ const TransactionsPage = () => {
         onSubmit={handleTransactionSubmit}
         isLoading={isLoading}
       />
+    </div>
     </div>
   );
 };
