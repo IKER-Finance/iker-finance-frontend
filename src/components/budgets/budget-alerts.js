@@ -26,6 +26,14 @@ export default function BudgetAlerts({ budgets = [], loading = false }) {
     }).format(amount);
   };
 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('sv-SE', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
   return (
     <Card>
       <div className="flex align-items-center gap-2 mb-3">
@@ -40,9 +48,14 @@ export default function BudgetAlerts({ budgets = [], loading = false }) {
             severity="error"
             text={
               <div>
-                <strong>{budget.name}</strong> is over budget by{' '}
-                {formatCurrency(Math.abs(budget.remainingAmount), budget.currencyCode)}
-                {' '}({(budget.percentageSpent - 100).toFixed(1)}%)
+                <div>
+                  <strong>{budget.categoryName || budget.name}</strong> is over budget by{' '}
+                  {formatCurrency(Math.abs(budget.remainingAmount), budget.currencyCode)}
+                  {' '}({(budget.percentageSpent - 100).toFixed(1)}%)
+                </div>
+                <div className="text-sm mt-1" style={{ opacity: 0.9 }}>
+                  {formatDate(budget.startDate)} - {formatDate(budget.endDate)}
+                </div>
               </div>
             }
             className="w-full"
@@ -55,9 +68,14 @@ export default function BudgetAlerts({ budgets = [], loading = false }) {
             severity="warn"
             text={
               <div>
-                <strong>{budget.name}</strong> is at{' '}
-                {budget.percentageSpent.toFixed(1)}% spent with{' '}
-                {formatCurrency(budget.remainingAmount, budget.currencyCode)} remaining
+                <div>
+                  <strong>{budget.categoryName || budget.name}</strong> is at{' '}
+                  {budget.percentageSpent.toFixed(1)}% spent with{' '}
+                  {formatCurrency(budget.remainingAmount, budget.currencyCode)} remaining
+                </div>
+                <div className="text-sm mt-1" style={{ opacity: 0.9 }}>
+                  {formatDate(budget.startDate)} - {formatDate(budget.endDate)}
+                </div>
               </div>
             }
             className="w-full"
