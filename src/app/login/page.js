@@ -1,6 +1,7 @@
 'use client';
 
-import Preloader from '../../components/Preloader';
+import Preloader from '../../components/preloader';
+import Logo from '../../components/common/logo';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,7 +11,7 @@ import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
-import { authService } from '../../services/api-service/auth-service';
+import { authService } from '../../services';
 import { selectAuthLoading, selectAuthError } from '../../redux/feature/auth-slice';
 import PAGE_ROUTES from '../../constants/page-constants';
 
@@ -39,18 +40,28 @@ export default function LoginPage() {
       await authService.login(formData);
       router.push(PAGE_ROUTES.overview);
     } catch (err) {
-      // handle error
     }
   };
 
   return (
     <>
-      {/* Render the Preloader as an overlay / portal */}
       <Preloader visible={showPreloader} />
 
-      {/* Page content is rendered underneath the overlay */}
+      <style jsx>{`
+        @media (min-width: 768px) {
+          .login-container {
+            padding: 2rem !important;
+          }
+        }
+        @media (min-width: 1024px) {
+          .login-container {
+            padding: 5rem !important;
+          }
+        }
+      `}</style>
+
       <div
-        className="flex justify-content-between align-items-center min-h-screen"
+        className="login-container flex flex-column md:flex-row justify-content-between align-items-center min-h-screen"
         style={{
           backgroundImage:
             "url('https://png.pngtree.com/thumb_back/fh260/background/20250512/pngtree-blue-gradient-soft-background-vector-image_17280771.jpg')",
@@ -58,18 +69,19 @@ export default function LoginPage() {
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           minHeight: '100vh',
-          padding: '0 5rem',
+          padding: '1rem',
         }}
       >
-        <div className="text-white w-6 pr-6">
-          <h1 className="text-6xl font-bold mb-3 drop-shadow-lg">IKER Finance</h1>
-          <p className="text-lg opacity-90">
-            Manage your finances faster — track expenses,
-            and make data-driven decisions all in one place.
+        <div className="text-white w-full md:w-6 mb-4 md:mb-0 md:pr-6 text-center md:text-left">
+          <div className="mb-3" style={{ filter: 'brightness(0) invert(1)' }}>
+            <Logo size="hero" />
+          </div>
+          <p className="text-base md:text-lg opacity-90">
+            Manage your finances across borders with confidence. Access your multi-currency expense tracker to view your spending patterns, check your budgets, and stay on top of your financial goals, all in your preferred currency.
           </p>
         </div>
 
-        <div className="w-6 flex justify-content-center">
+        <div className="w-full md:w-6 flex justify-content-center">
           <Card
             title="Login to IKER Finance"
             className="shadow-6"

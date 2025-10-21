@@ -18,8 +18,8 @@ export default function UnderConstruction({ pageName = "This Page" }) {
     }}>
       <Card style={{ maxWidth: '600px', textAlign: 'center', padding: '2rem' }}>
         <div style={{ marginBottom: '1.5rem', position: 'relative', width: '100%', height: '300px' }}>
-          <Image 
-            src="/under-construction.png"
+          <Image
+            src="/images/under-construction.png"
             alt="Under Construction"
             fill
             style={{ objectFit: 'contain' }}

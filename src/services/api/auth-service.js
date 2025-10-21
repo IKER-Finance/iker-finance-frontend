@@ -1,5 +1,5 @@
 import apiClient from '../api-client';
-import { tokenService } from '../token-service/token-service';
+import { tokenService } from '../../utils/token';
 import store from '../../redux/store';
 import { 
   loginStart, 
@@ -15,19 +15,19 @@ import {
 export const authService = {
   async login(credentials) {
     store.dispatch(loginStart());
-    
+
     try {
       const response = await apiClient.post('/auth/login', credentials);
       const { token, user } = response.data;
-      
+
       tokenService.setToken(token);
       tokenService.setUser(user);
-      
+
       store.dispatch(loginSuccess({ token, user }));
-      
+
       return response.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Login failed';
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Login failed';
       store.dispatch(loginFailure(errorMessage));
       throw new Error(errorMessage);
     }
