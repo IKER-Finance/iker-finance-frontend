@@ -60,9 +60,42 @@ export default function RegisterPage() {
     });
   };
 
+  const validatePassword = (password) => {
+    const errors = [];
+
+    if (password.length < 8) {
+      errors.push('Password must be at least 8 characters long');
+    }
+
+    if (!/\d/.test(password)) {
+      errors.push('Password must contain at least one digit (0-9)');
+    }
+
+    if (!/[a-z]/.test(password)) {
+      errors.push('Password must contain at least one lowercase letter (a-z)');
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      errors.push('Password must contain at least one uppercase letter (A-Z)');
+    }
+
+    const uniqueChars = new Set(password).size;
+    if (uniqueChars < 1) {
+      errors.push('Password must contain at least 1 unique character');
+    }
+
+    return errors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    const passwordErrors = validatePassword(formData.password);
+    if (passwordErrors.length > 0) {
+      setError(passwordErrors.join('. '));
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
@@ -209,6 +242,9 @@ export default function RegisterPage() {
                 toggleMask
                 required
               />
+              <small className="text-600 block mt-1">
+                Password must be at least 8 characters and include: uppercase, lowercase, and a digit
+              </small>
             </div>
 
             <div className="field mb-4">
