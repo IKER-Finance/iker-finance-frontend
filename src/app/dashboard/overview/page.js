@@ -43,7 +43,7 @@ export default function OverviewPage() {
   useEffect(() => {
     if (activeBudgetsData && activeBudgetsData.budgets) {
       const onTrack = activeBudgetsData.budgets.filter(
-        budget => budget.utilizationPercentage < 80
+        budget => budget.status === 'OnTrack' || budget.percentageSpent < 80
       ).length;
 
       setDashboardData(prev => ({
