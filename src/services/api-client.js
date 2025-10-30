@@ -16,7 +16,9 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isLoginOrRegisterEndpoint = error.config?.url?.includes('/auth/login') || error.config?.url?.includes('/auth/register');
+
+    if (error.response?.status === 401 && !isLoginOrRegisterEndpoint) {
       tokenService.removeToken();
       if (typeof window !== 'undefined') {
         window.location.href = '/login';

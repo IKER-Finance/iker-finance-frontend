@@ -27,7 +27,18 @@ export const authService = {
 
       return response.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Login failed';
+      let errorMessage = 'Login failed. Please try again.';
+
+      if (error.response?.data) {
+        const data = error.response.data;
+        errorMessage = data.error || data.message || data.title || errorMessage;
+
+        if (data.errors && typeof data.errors === 'object') {
+          const errorMessages = Object.values(data.errors).flat();
+          errorMessage = errorMessages.join('. ');
+        }
+      }
+
       store.dispatch(loginFailure(errorMessage));
       throw new Error(errorMessage);
     }
@@ -47,7 +58,18 @@ export const authService = {
       
       return response.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Registration failed';
+      let errorMessage = 'Registration failed. Please try again.';
+
+      if (error.response?.data) {
+        const data = error.response.data;
+        errorMessage = data.error || data.message || data.title || errorMessage;
+
+        if (data.errors && typeof data.errors === 'object') {
+          const errorMessages = Object.values(data.errors).flat();
+          errorMessage = errorMessages.join('. ');
+        }
+      }
+
       store.dispatch(registerFailure(errorMessage));
       throw new Error(errorMessage);
     }

@@ -1,6 +1,5 @@
 'use client';
 
-import { Provider } from 'react-redux';
 import { PrimeReactProvider } from 'primereact/api';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';
@@ -9,7 +8,7 @@ import 'primeflex/primeflex.css';
 import '../styles/theme.css';
 import '../styles/dashboard.css';
 
-import store from '../redux/store';
+import StoreProvider from '../redux/store-provider';
 import { LayoutProvider } from '../layout/context/layout-context';
 import RequireAuth from '../components/auth/require-auth';
 
@@ -22,7 +21,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Provider store={store}>
+        <StoreProvider>
           <PrimeReactProvider value={primeReactConfig}>
             <LayoutProvider>
               <RequireAuth>
@@ -30,7 +29,7 @@ export default function RootLayout({ children }) {
               </RequireAuth>
             </LayoutProvider>
           </PrimeReactProvider>
-        </Provider>
+        </StoreProvider>
       </body>
     </html>
   );
