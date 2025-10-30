@@ -7,9 +7,18 @@ Multi-currency personal finance management web application built with Next.js 14
 [![Redux](https://img.shields.io/badge/Redux-Toolkit-764ABC)](https://redux-toolkit.js.org/)
 [![PrimeReact](https://img.shields.io/badge/PrimeReact-10.9-007AD9)](https://primereact.org/)
 
+## Demo
+
+A quick overview of IKER Finance.
+
+https://github.com/user-attachments/assets/780c68f7-77e3-413e-b0f8-28fade24626e
+
+
 ## Live Demo
 
 **Live Application**: [https://iker-finance-site.onrender.com](https://iker-finance-site.onrender.com)
+
+ **API Documentation**: [https://iker-finance.onrender.com/swagger](https://iker-finance.onrender.com/swagger)
 
 **Test Credentials**
 ```

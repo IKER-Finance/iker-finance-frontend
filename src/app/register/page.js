@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Link from 'next/link';
 import Preloader from '../../components/preloader';
 import Logo from '../../components/common/logo';
@@ -13,7 +13,7 @@ import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
 import { Dropdown } from 'primereact/dropdown';
 import { authService, currencyService } from '../../services';
-import { selectAuthLoading, selectAuthError } from '../../redux/feature/auth-slice';
+import { selectAuthLoading, selectAuthError, clearError } from '../../redux/feature/auth-slice';
 import PAGE_ROUTES from '../../constants/page-constants';
 
 export default function RegisterPage() {
@@ -30,6 +30,7 @@ export default function RegisterPage() {
   const [loadingCurrencies, setLoadingCurrencies] = useState(true);
   const [showPreloader, setShowPreloader] = useState(true);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const loading = useSelector(selectAuthLoading);
   const authError = useSelector(selectAuthError);
@@ -54,6 +55,12 @@ export default function RegisterPage() {
   }, []);
 
   const handleChange = (e) => {
+    if (error) {
+      setError('');
+    }
+    if (authError) {
+      dispatch(clearError());
+    }
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -110,7 +117,7 @@ export default function RegisterPage() {
     try {
       await authService.register(formData);
       router.push(PAGE_ROUTES.overview);
-    } catch (err) {
+    } catch {
     }
   };
 

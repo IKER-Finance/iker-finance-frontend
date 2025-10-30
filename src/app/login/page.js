@@ -12,7 +12,7 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Message } from 'primereact/message';
 import { authService } from '../../services';
-import { selectAuthLoading, selectAuthError } from '../../redux/feature/auth-slice';
+import { selectAuthLoading, selectAuthError, clearError } from '../../redux/feature/auth-slice';
 import PAGE_ROUTES from '../../constants/page-constants';
 
 export default function LoginPage() {
@@ -31,6 +31,9 @@ export default function LoginPage() {
   }, []);
 
   const handleChange = (e) => {
+    if (error) {
+      dispatch(clearError());
+    }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -39,7 +42,7 @@ export default function LoginPage() {
     try {
       await authService.login(formData);
       router.push(PAGE_ROUTES.overview);
-    } catch (err) {
+    } catch {
     }
   };
 
