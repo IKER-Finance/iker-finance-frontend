@@ -172,7 +172,7 @@ export default function RegisterPage() {
           </div>
 
           <p className="text-base md:text-lg opacity-90">
-            Manage your finances across multiple currencies with ease. Track expenses, set budgets, and gain insights - all automatically converted to your home currency.
+            Manage your finances across multiple currencies with ease. Track expenses, set budgets, and gain insights, all automatically converted to your home currency.
           </p>
         </div>
 
