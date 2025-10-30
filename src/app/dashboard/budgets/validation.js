@@ -2,7 +2,7 @@ import Joi from 'joi';
 import {
   textValidation,
   amountValidation,
-  futureDateValidation,
+  budgetDateValidation,
   idValidation
 } from '@/lib/validators/common-validators';
 
@@ -21,7 +21,7 @@ export const budgetValidationSchema = Joi.object({
       'number.min': 'Valid budget period must be selected.',
       'number.max': 'Valid budget period must be selected.',
     }),
-  startDate: futureDateValidation('Start date'),
+  startDate: budgetDateValidation('Start date'),
   description: textValidation({
     name: 'Description',
     required: false,

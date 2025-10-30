@@ -256,7 +256,16 @@ const BudgetForm = ({
             value={startDate}
             onChange={(e) => setStartDate(e.value)}
             dateFormat="yy-mm-dd"
-            minDate={new Date()}
+            minDate={(() => {
+              const minDate = new Date();
+              minDate.setMonth(minDate.getMonth() - 2);
+              return minDate;
+            })()}
+            maxDate={(() => {
+              const maxDate = new Date();
+              maxDate.setMonth(maxDate.getMonth() + 12);
+              return maxDate;
+            })()}
             className={errors.startDate ? 'p-invalid w-full' : 'w-full'}
             placeholder="Select start date"
             showIcon

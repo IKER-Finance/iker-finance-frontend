@@ -60,6 +60,28 @@ export const futureDateValidation = (name) => {
     });
 };
 
+export const budgetDateValidation = (name) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const minDate = new Date(today);
+  minDate.setMonth(minDate.getMonth() - 2);
+
+  const maxDate = new Date(today);
+  maxDate.setMonth(maxDate.getMonth() + 12);
+
+  return Joi.date()
+    .required()
+    .min(minDate)
+    .max(maxDate)
+    .messages({
+      'any.required': `${name} is required.`,
+      'date.base': `${name} must be a valid date.`,
+      'date.min': `${name} cannot be older than 2 months.`,
+      'date.max': `${name} cannot be more than 12 months in the future.`,
+    });
+};
+
 export const pastDateValidation = (name) => {
   const endOfToday = new Date();
   endOfToday.setHours(23, 59, 59, 999);
