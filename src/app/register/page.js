@@ -149,10 +149,7 @@ export default function RegisterPage() {
       <div
         className="register-container flex flex-column md:flex-row justify-content-between align-items-center min-h-screen"
         style={{
-          backgroundImage: "url('https://png.pngtree.com/thumb_back/fh260/background/20250512/pngtree-blue-gradient-soft-background-vector-image_17280771.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
+          background: 'linear-gradient(135deg, #0f2027 0%, #203a43 25%, #2c5364 50%, #3b82f6 75%, #60a5fa 100%)',
           minHeight: '100vh',
           padding: '1rem',
         }}
@@ -162,11 +159,20 @@ export default function RegisterPage() {
           <div className="mb-3" style={{ filter: 'brightness(0) invert(1)' }}>
             <Logo size="hero" />
           </div>
+
+          <div className="mb-4" style={{ borderRadius: '0.5rem', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
+            <video
+              className="w-full"
+              controls
+              style={{ maxHeight: '320px', objectFit: 'cover', display: 'block' }}
+            >
+              <source src="/videos/IKER Finance Intro.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
           <p className="text-base md:text-lg opacity-90">
-            Take control of your money across multiple currencies. Whether you&apos;re studying abroad, traveling internationally, or managing finances in different countries, IKER Finance helps you track expenses, set smart budgets, and understand your spending habits while automatically converting everything to your home currency.
-          </p>
-          <p className="text-base md:text-lg opacity-90 mt-3">
-            Create your free account in seconds and start managing your finances with confidence.
+            Manage your finances across multiple currencies with ease. Track expenses, set budgets, and gain insights - all automatically converted to your home currency.
           </p>
         </div>
 

@@ -66,11 +66,7 @@ export default function LoginPage() {
       <div
         className="login-container flex flex-column md:flex-row justify-content-between align-items-center min-h-screen"
         style={{
-          backgroundImage:
-            "url('https://png.pngtree.com/thumb_back/fh260/background/20250512/pngtree-blue-gradient-soft-background-vector-image_17280771.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
+          background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 25%, #3b82f6 50%, #60a5fa 75%, #93c5fd 100%)',
           minHeight: '100vh',
           padding: '1rem',
         }}
